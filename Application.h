@@ -20,7 +20,21 @@ public:
 	AssetLoader& Loader();
 	Scene& scene();
 
+	glm::vec2 getMousePos() {
+		return m_mousePos;
+	}
+
+	float getTime() {
+		return m_time;
+	}
+	float deltaTime() {
+		return m_deltaTime;
+	}
+
 private:
+
+	float m_time;
+	float m_deltaTime;
 
 	AssetLoader m_loader;
 	Scene* m_scene = nullptr;
@@ -30,6 +44,8 @@ private:
 	glm::vec2 m_windowSize;
 
 	GLFWwindow* m_window;
+
+	glm::vec2 m_mousePos;
 
 	Application();
 	~Application();

@@ -1,132 +1,91 @@
 #include "Framebuffers.h"
+#include <iostream>
+#include "GLCheckError.h"
 
-Framebuffer::Framebuffer()
+
+Framebuffer::Framebuffer(GLenum read, GLenum draw)
 {
+    glGenFramebuffers(1, &m_buffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
+    //glReadBuffer(read);
+    //glDrawBuffer(draw);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 Framebuffer::~Framebuffer()
 {
+
+}
+
+void Framebuffer::clear()
+{
+    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void Framebuffer::bind()
 {
-}
-
-void Framebuffer::unbind()
-{
-}
-
-Texture* Framebuffer::Image()
-{
-    return m_texture;
-}
-
-ColorFramebuffer::ColorFramebuffer()
-{
-    glGenFramebuffers(1, &m_buffer);
-    m_renderBuffer = 0;
-}
-
-ColorFramebuffer::~ColorFramebuffer()
-{
-    if (!m_isTextureUnique)
-        delete m_texture;
-    glDeleteFramebuffers(1, &m_buffer);
-    if (m_renderBuffer)
-        glDeleteRenderbuffers(1, &m_renderBuffer);
-}
-
-void ColorFramebuffer::clear()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    glClear(/*GL_COLOR_BUFFER_BIT | */GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void ColorFramebuffer::bind()
-{
-    if (m_texture == nullptr)
-        return;
-    glViewport(0, 0, (int)m_texture->size().x, (int)m_texture->size().y);
+    if (m_bindTextures.empty()) return;
+    glViewport(0, 0, (int)m_bindTextures[0]->size().x, (int)m_bindTextures[0]->size().y);
     glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_STENCIL_TEST);
 }
 
-void ColorFramebuffer::unbind()
+void Framebuffer::unbind()
 {
+    if (m_bindTextures.empty()) return;
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_STENCIL_TEST);
 }
 
-void ColorFramebuffer::attachTexture(Texture* texture, bool isUnique)
+void Framebuffer::attachTexture(Texture* texture, GLenum attachmentType)
 {
-    if (m_isTextureUnique)
-        delete m_texture;
-    
-    m_texture = texture;
-    m_isTextureUnique = isUnique;
+    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
+    int i;
+    for (i = 0; i < m_bindTextures.size(); i++) {
+        if (m_attachmentType[i] == attachmentType) {
+            m_bindTextures.erase(m_bindTextures.begin() + i);
+            m_attachmentType.erase(m_attachmentType.begin() + i);
+            break;
+        }
+    }
+    m_bindTextures.push_back(texture);
+    m_attachmentType.push_back(attachmentType);
+
+    glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, texture->GL(), 0);
+    glDrawBuffers(m_attachmentType.size(), &(m_attachmentType[0]));
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void Framebuffer::attachRenderbuffer(Renderbuffer* renderbuffer)
+{
+    m_attachedRenderBuffer = renderbuffer;
 
     glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_texture->GL(), 0);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, renderbuffer->GL());
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
 
-    if (m_renderBuffer)
-        glDeleteRenderbuffers(1, &m_renderBuffer);
-    glGenRenderbuffers(1, &m_renderBuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, m_renderBuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, (int)m_texture->size().x, (int)m_texture->size().y);
+Renderbuffer::Renderbuffer(int width, int height)
+{
+    glGenRenderbuffers(1, &m_buffer);
+    std::cout << glCheckError() << std::endl;
+    glBindRenderbuffer(GL_RENDERBUFFER, m_buffer);
+    std::cout << glCheckError() << std::endl;
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
+    std::cout << glCheckError() << std::endl;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_renderBuffer);
-
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
-DepthFramebuffer::DepthFramebuffer()
+Renderbuffer::~Renderbuffer()
 {
-    glGenFramebuffers(1, &m_buffer);
+    glDeleteRenderbuffers(1, &m_buffer);
 }
 
-DepthFramebuffer::~DepthFramebuffer()
+GLuint Renderbuffer::GL()
 {
-    glDeleteFramebuffers(1, &m_buffer);
-    if (m_isTextureUnique)
-        delete m_texture;
-}
-
-void DepthFramebuffer::clear()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    glClear(GL_DEPTH_BUFFER_BIT);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-}
-
-void DepthFramebuffer::bind()
-{
-    if (m_texture == nullptr)
-        return;
-    glViewport(0, 0, (int)m_texture->size().x, (int)m_texture->size().y);
-    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    glEnable(GL_DEPTH_TEST);
-}
-
-void DepthFramebuffer::unbind()
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-    glDisable(GL_DEPTH_TEST);
-}
-
-void DepthFramebuffer::attachTexture(Texture* texture, bool isUnique)
-{
-    if (m_isTextureUnique)
-        delete m_texture;
-
-    m_texture = texture;
-    m_isTextureUnique = isUnique;
-
-    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, m_texture->GL(), 0);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    return m_buffer;
 }

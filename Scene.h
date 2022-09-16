@@ -2,8 +2,8 @@
 #include "Shader.h"
 #include "GameObject.h"
 #include "TEvent.h"
-#include "Framebuffers.h"
 #include "Mesh.h"
+#include "CameraComponent.h"
 
 #include <vector>
 
@@ -16,21 +16,36 @@ public:
 	extend::TEvent<glm::mat4&, Shader*> drawCallEvent;
 	extend::TEvent<Framebuffer&, Framebuffer&> lightProcessEvent;
 
+	//logicEvents
+	extend::TEvent<> beginPlayEvent;
+	extend::TEvent<> tickEvent;
+
+	extend::TEvent<> prePhysicsEvent;
+	extend::TEvent<> postPhysicsEvent;
+
+	extend::TEvent<> preRenderEvent;
+	//logicEventsEnd
+
 	void update();
 	void draw();
 
-	GameObject* instantiate(GameObject* parent = nullptr);
+	GameObject* spawn(Transform transform = Transform(), GameObject* parent = nullptr);
+	void kill(GameObject* object);
+
+	void addCamera(CameraComponent* camera);
+	void deleteCamera(CameraComponent* camera);
 
 private:
 
+	void setMainCamera(CameraComponent* camera);
+
+	std::vector<CameraComponent*> m_cameras;
+	CameraComponent* m_mainCamera;
+
+	std::vector<GameObject*> m_instancedObjects;
 	std::vector<GameObject*> m_objects;
+	std::vector<GameObject*> m_deadObjects;
 
-	Shader* m_simple;
 	Shader* m_postProcessingShader;
-
-	Mesh* m_canvas;
-
-	ColorFramebuffer colorframeBuffer;
-	DepthFramebuffer depthFramebuffer;
 };
 

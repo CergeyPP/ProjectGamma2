@@ -8,7 +8,7 @@ class Texture : public IAsset
 {
 public:
 
-	Texture(GLenum target = GL_TEXTURE_2D, GLenum format = GL_RGBA, glm::vec2 size = glm::vec2(1), GLenum type = GL_UNSIGNED_BYTE);
+	Texture(GLenum target = GL_TEXTURE_2D, GLenum intenationalformat = GL_RGBA, GLenum format = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE, glm::vec2 size = glm::vec2(1));
 	~Texture();
 
 	GLuint GL();
@@ -27,5 +27,6 @@ private:
 	GLenum m_type;
 	GLuint m_texture;
 	GLenum m_format;
+	GLenum m_internationalformat;
 };
 

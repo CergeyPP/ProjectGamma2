@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <map>
+#include <functional>
 
 class IAsset
 {
@@ -19,7 +20,8 @@ public:
 	~AssetLoader();
 
 	template<class Type>
-	Type* getAsset(const std::string& filePath) {
+	Type* getAsset(const std::string& filename) {
+		std::string filePath = "Assets/" + filename;
 		auto it = std::find_if(m_loadedAssets.cbegin(), m_loadedAssets.cend(), [&filePath](const std::pair<const std::string, IAsset*> elem) {
 			Type* asset = dynamic_cast<Type*>(elem.second);
 
@@ -34,9 +36,21 @@ public:
 		return (Type*)m_loadedAssets[filePath];
 	}
 
+	template<class Type>
+	void forEach(std::function<void(Type*)> func) {
+		for (auto& elem : m_loadedAssets) {
+			Type* asset = dynamic_cast<Type*>(elem.second);
+			if (asset != nullptr) {
+				func(asset);
+			}
+		}
+	}
+
 	void addRawAsset(const std::string& filePath, IAsset* asset) {
 		m_loadedAssets[filePath] = asset;
 	}
+
+	void clear();
 
 private:
 

@@ -22,14 +22,10 @@ void Mesh::draw(Shader* shader, glm::mat4 ProjectionView, const Transform transf
 		m_material->use();
 	}
 	else {
+		glUseProgram(shader->getProgram());
 		shader->setUniform("ProjectionView", ProjectionView);
 		glm::mat4 model = transform.matrix();
 		shader->setUniform("Model", model);
-
-		glm::vec3 color = glm::vec3(0.1, 0.1, 0.1);
-		shader->setUniform("Albedo", color);
-
-		glUseProgram(shader->getProgram());
 	}
 
 	glBindVertexArray(VAO);

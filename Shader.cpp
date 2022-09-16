@@ -4,6 +4,8 @@
 #include <vector>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "GLCheckError.h"
+
 void Shader::loadVertex(const std::string shaderPath)
 {
     GLint Result = GL_FALSE;
@@ -22,9 +24,9 @@ void Shader::loadVertex(const std::string shaderPath)
         ShaderStream.close();
     }
 
-    printf("Компиляция шейдера: %s\n", shaderPath.c_str());
+    //printf("Компиляция шейдера: %s\n", shaderPath.c_str());
     const char* SourcePointer = ShaderCode.c_str();
-    std::cout << SourcePointer << std::endl;
+    //std::cout << SourcePointer << std::endl;
     glShaderSource(vertexShaderID_, 1, &SourcePointer, NULL);
     glCompileShader(vertexShaderID_);
 
@@ -55,9 +57,9 @@ void Shader::loadFragment(const std::string shaderPath)
         ShaderStream.close();
     }
 
-    printf("Компиляция шейдера: %s\n", shaderPath.c_str());
+    //printf("Компиляция шейдера: %s\n", shaderPath.c_str());
     const char* SourcePointer = ShaderCode.c_str();
-    std::cout << SourcePointer << std::endl;
+    //std::cout << SourcePointer << std::endl;
     glShaderSource(fragmentShaderID_, 1, &SourcePointer, NULL);
     glCompileShader(fragmentShaderID_);
 
@@ -88,9 +90,9 @@ void Shader::loadGeometry(const std::string shaderPath)
         ShaderStream.close();
     }
 
-    printf("Компиляция шейдера: %s\n", shaderPath.c_str());
+    //printf("Компиляция шейдера: %s\n", shaderPath.c_str());
     const char* SourcePointer = ShaderCode.c_str();
-    std::cout << SourcePointer << std::endl;
+    //std::cout << SourcePointer << std::endl;
     glShaderSource(geometryShaderID_, 1, &SourcePointer, NULL);
     glCompileShader(geometryShaderID_);
 
@@ -110,7 +112,7 @@ void Shader::linkProgram()
     GLint Result = GL_FALSE;
     int InfoLogLength;
 
-    fprintf(stdout, "Создаем шейдерную программу и привязываем шейдеры к нейn");
+    fprintf(stdout, "Создаем шейдерную программу и привязываем шейдеры к ней\n");
     GLuint ProgramID = glCreateProgram();
     glAttachShader(ProgramID, vertexShaderID_);
     glAttachShader(ProgramID, fragmentShaderID_);
@@ -148,6 +150,8 @@ void Shader::load(const std::string& filePath)
 
         std::string shaderFile;
 
+        std::cout << "Compiling " << filePath << std::endl;
+
         file >> shaderFile;
         loadVertex(directory + shaderFile);
 
@@ -161,6 +165,8 @@ void Shader::load(const std::string& filePath)
 
         linkProgram();
     }
+
+    file.close();
 }
 
 GLuint Shader::getProgram()
@@ -272,6 +278,7 @@ void Shader::setUniform(const std::string name, glm::mat4& value)
 
 void Shader::setTexture(const std::string name, Texture& texture)
 {
+    std::cout << glewGetErrorString(glGetError()) << std::endl;
     glUseProgram(program_);
     if (textureUniformOffset_.find(name) == textureUniformOffset_.end()) {
 
@@ -286,7 +293,11 @@ void Shader::setTexture(const std::string name, Texture& texture)
     TextureUniform uniform = textureUniformOffset_[name];
 
     glActiveTexture(GL_TEXTURE0 + uniform.textureIndex);
+    std::cout << glCheckError() << std::endl;
     glBindTexture(texture.target(), texture.GL());
+    std::cout << glCheckError() << std::endl;
     glUniform1i(uniform.offset, uniform.textureIndex);
+    std::cout << glCheckError() << std::endl;
     glActiveTexture(0);
+    std::cout << glewGetErrorString(glGetError()) << std::endl;
 }

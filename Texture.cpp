@@ -1,24 +1,24 @@
 #include "Texture.h"
 #include <SOIL/SOIL.h>
 
-Texture::Texture(GLenum target, GLenum format, glm::vec2 size, GLenum type)
+Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenum type, glm::vec2 size)
 {
     m_target = target;
     m_size = size;
     m_format = format;
+    m_internationalformat = internationalformat;
     m_type = type;
 
     glGenTextures(1, &m_texture);
     glBindTexture(m_target, m_texture);
 
-    glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
-    glTexImage2D(m_target, 0, format, (int)size.x, (int)size.y, 0, format, m_type, nullptr);
-    glGenerateMipmap(m_target);
+    glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
     glBindTexture(m_target, 0);
 }
 
@@ -67,24 +67,25 @@ void Texture::load(const std::string& filePath)
 
 void Texture::generateTextureFromData(int width, int height, unsigned char* data)
 {
+    m_type = GL_UNSIGNED_BYTE;
+    m_size = glm::vec2(width, height);
+    m_format = GL_RGBA;
+    m_internationalformat = GL_RGBA;
+    m_target = GL_TEXTURE_2D;
+
     if (m_texture)
         glDeleteTextures(1, &m_texture);
 
     glGenTextures(1, &m_texture);
-    glBindTexture(GL_TEXTURE_2D, m_texture);
+    glBindTexture(m_target, m_texture);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    m_type = GL_UNSIGNED_BYTE;
-    m_size = glm::vec2(width, height);
-    m_format = GL_RGBA;
-    m_target = GL_TEXTURE_2D;
+    glTexImage2D(m_target, 0, m_internationalformat, width, height, 0, m_format, m_type, data);
+    glGenerateMipmap(m_target);
+    glBindTexture(m_target, 0);
 }

@@ -1,57 +1,48 @@
 #pragma once
 #include <GL/glew.h>
 #include <glm/glm.hpp>
+#include <vector>
 
 #include "Texture.h"
+
+class Renderbuffer;
 
 class Framebuffer
 {
 public:
 
-	Framebuffer();
+	Framebuffer(GLenum read = GL_FRONT, GLenum draw = GL_FRONT);
 	virtual ~Framebuffer();
 
-	virtual void clear() = 0;
-	virtual void bind() = 0;
-	virtual void unbind() = 0;
-	Texture* Image();
-	virtual void attachTexture(Texture* texture, bool isUnique) = 0;
+	void clear();
+	void bind();
+	void unbind();
 
-protected:
+	GLuint GL() {
+		return m_buffer;
+	}
 
-	Texture* m_texture = nullptr;
-	bool m_isTextureUnique = 0;
-	GLuint m_buffer = -1;
-};
-
-class ColorFramebuffer : public Framebuffer
-{
-public:
-
-	ColorFramebuffer();
-	~ColorFramebuffer() override;
-
-	void clear() override;
-	void bind() override;
-	void unbind() override;
-
-	void attachTexture(Texture* texture, bool isUnique) override;
+	//sdfgsdfhg
+	void attachTexture(Texture* texture, GLenum attachmentType);
+	void attachRenderbuffer(Renderbuffer* renderbuffer);
 
 private:
 
-	GLuint m_renderBuffer;
+	GLuint m_buffer = -1;
+	std::vector<Texture*> m_bindTextures;
+	std::vector<GLuint> m_attachmentType;
+
+	Renderbuffer* m_attachedRenderBuffer;
 };
 
-class DepthFramebuffer : public Framebuffer
-{
+class Renderbuffer {
 public:
 
-	DepthFramebuffer();
-	~DepthFramebuffer() override;
+	Renderbuffer(int width, int height);
+	~Renderbuffer();
 
-	void clear() override;
-	void bind() override;
-	void unbind() override;
+	GLuint GL();
+private:
 
-	void attachTexture(Texture* texture, bool isUnique) override;
+	GLuint m_buffer;
 };

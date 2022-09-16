@@ -1,5 +1,9 @@
 #include "GameObject.h"
 
+#include <iostream>
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 GameObject::~GameObject()
 {
 	for (auto& elem : m_children) {

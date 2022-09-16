@@ -1,0 +1,4 @@
+Move KEYAXIS W S D A
+Jump KEY .
+LeftClick MOUSEBUTTON 0
+Look MOUSEAXIS

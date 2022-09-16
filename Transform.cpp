@@ -18,30 +18,30 @@ void Transform::fromMatrix(glm::mat4& matrix)
 
 glm::vec3 Transform::forward()
 {
-    return matrix() * glm::vec4(1, 0, 0, 1);
+    return matrix() * glm::vec4(1, 0, 0, 0);
 }
 
 glm::vec3 Transform::back()
 {
-    return matrix() * glm::vec4(-1, 0, 0, 1);
+    return matrix() * glm::vec4(-1, 0, 0, 0);
 }
 
 glm::vec3 Transform::right()
 {
-    return matrix() * glm::vec4(0, 0, 1, 1);
+    return matrix() * glm::vec4(0, 0, 1, 0);
 }
 
 glm::vec3 Transform::left()
 {
-    return matrix() * glm::vec4(0, 0, -1, 1);
+    return matrix() * glm::vec4(0, 0, -1, 0);
 }
 
 glm::vec3 Transform::up()
 {
-    return matrix() * glm::vec4(0, 1, 0, 1);
+    return matrix() * glm::vec4(0, 1, 0, 0);
 }
 
 glm::vec3 Transform::down()
 {
-    return matrix() * glm::vec4(0, -1, 0, 1);
+    return matrix() * glm::vec4(0, -1, 0, 0);
 }

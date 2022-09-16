@@ -6,7 +6,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "Mesh.h"
+//#include "Mesh.h"
+#include "InputMap.h"
 
 
 Application::Application()
@@ -85,12 +86,12 @@ void Application::start()
 		float deltaTime = time - currentTime;
 		currentTime = time;
 
+		m_deltaTime = deltaTime;
+		m_time = currentTime;
+
 		glfwPollEvents();
 
 		m_scene->update();
-
-		//glEnable(GL_DEPTH_TEST);
-		//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_scene->draw();
 
@@ -120,20 +121,53 @@ void Application::clearResources()
 
 void Application::KeyCallback(GLFWwindow* window, int button, int scancode, int action, int mods)
 {
+	Application* app = (Application*)glfwGetWindowUserPointer(window);
+
+	app->m_loader.forEach<InputMap>([&button, &action, &mods](InputMap* map) {
+		map->broadcastKeyEvent(button, action, mods);
+		}
+	);
 }
 
 void Application::MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
 {
+	Application* app = (Application*)glfwGetWindowUserPointer(window);
+
+	app->m_loader.forEach<InputMap>([&button, &action, &mods](InputMap* map) {
+		map->broadcastMouseButtonEvent(button, action, mods);
+		}
+	);
 }
 
 void Application::MouseMovedCallback(GLFWwindow* window, double xpos, double ypos)
 {
+	Application* app = (Application*)glfwGetWindowUserPointer(window);
+
+	glm::vec2 offset = glm::vec2(xpos, ypos) - app->m_mousePos;
+	app->m_mousePos = glm::vec2(xpos, ypos);
+
+	app->m_loader.forEach<InputMap>([&offset](InputMap* map) {
+		map->broadcastMouseMovedEvent(offset.x, offset.y);
+		}
+	);
 }
 
 void Application::ScrollCallback(GLFWwindow* window, double xpos, double ypos)
 {
+	Application* app = (Application*)glfwGetWindowUserPointer(window);
+
+	app->m_loader.forEach<InputMap>([&xpos, &ypos](InputMap* map) {
+		map->broadcastMouseMovedEvent(xpos, ypos);
+		}
+	);
 }
 
 void Application::CloseCallback(GLFWwindow* window)
 {
+	Application* app = (Application*)glfwGetWindowUserPointer(window);
+
+	app->m_loader.forEach<InputMap>([](InputMap* map) {
+		map->broadcastCloseEvent();
+		}
+	);
 }

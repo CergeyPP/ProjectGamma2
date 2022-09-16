@@ -6,9 +6,12 @@ uniform mat4 ProjectionView;
 uniform mat4 Model;
 
 out vec2 TexCoords;
+out vec3 FragPos;
+out vec3 Normal;
 
 void main(){
 	 gl_Position = ProjectionView * Model * vec4(position, 1);
-	//gl_Position = Model*vec4(position, 1);
+	FragPos = vec3(Model*vec4(position, 1));
 	TexCoords = texCoords;
+	Normal = vec3(1,0,0);
 }
