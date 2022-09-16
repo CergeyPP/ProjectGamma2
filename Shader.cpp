@@ -278,7 +278,6 @@ void Shader::setUniform(const std::string name, glm::mat4& value)
 
 void Shader::setTexture(const std::string name, Texture& texture)
 {
-    std::cout << glewGetErrorString(glGetError()) << std::endl;
     glUseProgram(program_);
     if (textureUniformOffset_.find(name) == textureUniformOffset_.end()) {
 
@@ -293,11 +292,6 @@ void Shader::setTexture(const std::string name, Texture& texture)
     TextureUniform uniform = textureUniformOffset_[name];
 
     glActiveTexture(GL_TEXTURE0 + uniform.textureIndex);
-    std::cout << glCheckError() << std::endl;
     glBindTexture(texture.target(), texture.GL());
-    std::cout << glCheckError() << std::endl;
     glUniform1i(uniform.offset, uniform.textureIndex);
-    std::cout << glCheckError() << std::endl;
-    glActiveTexture(0);
-    std::cout << glewGetErrorString(glGetError()) << std::endl;
 }

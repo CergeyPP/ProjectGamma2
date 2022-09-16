@@ -56,3 +56,6 @@ private:
 	static void ScrollCallback(GLFWwindow* window, double xpos, double ypos);
 	static void CloseCallback(GLFWwindow* window);
 };
+
+AssetLoader& Loader();
+Scene& MainScene();

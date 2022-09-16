@@ -21,10 +21,10 @@ void StaticMeshComponent::drawCall(glm::mat4& ProjectionView, Shader* shader)
 
 void StaticMeshComponent::DisableEvent()
 {
-	Application::get().scene().drawCallEvent -= MY_METHOD_HANDLER(StaticMeshComponent::drawCall);
+	MainScene().drawCallEvent -= MY_METHOD_HANDLER(StaticMeshComponent::drawCall);
 }
 
 void StaticMeshComponent::EnableEvent()
 {
-	Application::get().scene().drawCallEvent += MY_METHOD_HANDLER(StaticMeshComponent::drawCall);
+	MainScene().drawCallEvent += MY_METHOD_HANDLER(StaticMeshComponent::drawCall);
 }

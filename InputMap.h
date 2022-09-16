@@ -43,8 +43,7 @@ public:
     KeyInputAction(int key) {
         m_key = key;
     }
-    ~KeyInputAction() override{
-    }
+    ~KeyInputAction() override{ }
 
     void keyAction(int key, int action, int mods) override {
         if (key != m_key) return;
@@ -72,6 +71,7 @@ public:
         keyY[0] = keyyPositive;
         keyY[1] = keyyNegative;
     }
+    ~AxisKeyInputAction() override { }
 
     void keyAction(int key, int action, int mods) override {
         if (action == GLFW_REPEAT) return;

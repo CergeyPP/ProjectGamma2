@@ -14,5 +14,7 @@ int main() {
 	app.init();
 	app.start();
 
+	system("pause");
+
 	return 0;
 }

@@ -3,12 +3,12 @@
 
 void IPhysicComponent::DisableEvent()
 {
-	Application::get().scene().prePhysicsEvent -= MY_METHOD_HANDLER(IPhysicComponent::onPreparePhysics);
-	Application::get().scene().postPhysicsEvent -= MY_METHOD_HANDLER(IPhysicComponent::onFetchPhysics);
+	MainScene().prePhysicsEvent -= MY_METHOD_HANDLER(IPhysicComponent::onPreparePhysics);
+	MainScene().postPhysicsEvent -= MY_METHOD_HANDLER(IPhysicComponent::onFetchPhysics);
 }
 
 void IPhysicComponent::EnableEvent()
 {
-	Application::get().scene().prePhysicsEvent += MY_METHOD_HANDLER(IPhysicComponent::onPreparePhysics);
-	Application::get().scene().postPhysicsEvent += MY_METHOD_HANDLER(IPhysicComponent::onFetchPhysics);
+	MainScene().prePhysicsEvent += MY_METHOD_HANDLER(IPhysicComponent::onPreparePhysics);
+	MainScene().postPhysicsEvent += MY_METHOD_HANDLER(IPhysicComponent::onFetchPhysics);
 }

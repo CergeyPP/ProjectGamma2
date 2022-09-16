@@ -3,9 +3,9 @@
 
 ActorComponent::ActorComponent(GameObject* parent) : Component(parent)
 {
-	Application::get().scene().beginPlayEvent += MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
-	Application::get().scene().tickEvent += MY_METHOD_HANDLER(ActorComponent::update);
-	Application::get().scene().preRenderEvent += MY_METHOD_HANDLER(ActorComponent::preRender);
+	MainScene().beginPlayEvent += MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
+	MainScene().tickEvent += MY_METHOD_HANDLER(ActorComponent::update);
+	MainScene().preRenderEvent += MY_METHOD_HANDLER(ActorComponent::preRender);
 }
 
 ActorComponent::~ActorComponent()
@@ -15,17 +15,17 @@ ActorComponent::~ActorComponent()
 
 void ActorComponent::DisableEvent()
 {
-	Application::get().scene().beginPlayEvent -= MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
-	Application::get().scene().tickEvent -= MY_METHOD_HANDLER(ActorComponent::update);
-	Application::get().scene().preRenderEvent -= MY_METHOD_HANDLER(ActorComponent::preRender);
+	MainScene().beginPlayEvent -= MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
+	MainScene().tickEvent -= MY_METHOD_HANDLER(ActorComponent::update);
+	MainScene().preRenderEvent -= MY_METHOD_HANDLER(ActorComponent::preRender);
 	IPhysicComponent::DisableEvent();
 }
 
 void ActorComponent::EnableEvent()
 {
-	Application::get().scene().beginPlayEvent += MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
-	Application::get().scene().tickEvent += MY_METHOD_HANDLER(ActorComponent::update);
-	Application::get().scene().preRenderEvent += MY_METHOD_HANDLER(ActorComponent::preRender);
+	MainScene().beginPlayEvent += MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
+	MainScene().tickEvent += MY_METHOD_HANDLER(ActorComponent::update);
+	MainScene().preRenderEvent += MY_METHOD_HANDLER(ActorComponent::preRender);
 	IPhysicComponent::EnableEvent();
 }
 

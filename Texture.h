@@ -18,7 +18,7 @@ public:
 	void resize(glm::vec2 size);
 
 	void load(const std::string& filePath) override;
-	void generateTextureFromData(int width, int height, unsigned char* data);
+	void generateTextureFromData(int width, int height, const unsigned char* data);
 
 private:
 

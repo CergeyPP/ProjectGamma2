@@ -11,6 +11,9 @@ class Scene
 {
 public:
 
+	Scene();
+	~Scene();
+
 	void init(const std::string& scenePath);
 
 	extend::TEvent<glm::mat4&, Shader*> drawCallEvent;
@@ -29,7 +32,7 @@ public:
 	void update();
 	void draw();
 
-	GameObject* spawn(Transform transform = Transform(), GameObject* parent = nullptr);
+	GameObject* spawn(const Transform& transform = Transform(), GameObject* parent = nullptr);
 	void kill(GameObject* object);
 
 	void addCamera(CameraComponent* camera);
@@ -45,7 +48,5 @@ private:
 	std::vector<GameObject*> m_instancedObjects;
 	std::vector<GameObject*> m_objects;
 	std::vector<GameObject*> m_deadObjects;
-
-	Shader* m_postProcessingShader;
 };
 

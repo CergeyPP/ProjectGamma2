@@ -114,8 +114,9 @@ Scene& Application::scene()
 
 void Application::clearResources()
 {
+	delete m_scene;
 
-
+	m_loader.clear();
 	glfwTerminate();
 }
 
@@ -170,4 +171,11 @@ void Application::CloseCallback(GLFWwindow* window)
 		map->broadcastCloseEvent();
 		}
 	);
+}
+
+AssetLoader& Loader() {
+	return Application::get().Loader();
+}
+Scene& MainScene() {
+	return Application::get().scene();
 }

@@ -19,6 +19,9 @@
     <Filter Include="Файлы заголовков\User Scripts">
       <UniqueIdentifier>{872f2b61-3cb2-4335-b88a-4f1efe3c2305}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Исходные файлы\Extensions">
+      <UniqueIdentifier>{467f42c9-6fe8-474e-a0a3-c9882463f163}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -74,6 +77,15 @@
     </ClCompile>
     <ClCompile Include="GLCheckError.cpp">
       <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Model.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="LightComponent.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="CreateCanvasMesh.cpp">
+      <Filter>Исходные файлы\Extensions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -135,6 +147,12 @@
       <Filter>Файлы заголовков\Extensions</Filter>
     </ClInclude>
     <ClInclude Include="GLCheckError.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Model.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="LightComponent.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

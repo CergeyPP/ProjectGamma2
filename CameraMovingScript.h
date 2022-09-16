@@ -16,7 +16,6 @@ public:
 	~CameraMovingScript() override
 	{
 		Application::get().Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Jump"]->event -= MY_METHOD_HANDLER(CameraMovingScript::jump);
-
 	}
 
 private:

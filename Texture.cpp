@@ -1,6 +1,8 @@
 #include "Texture.h"
 #include <SOIL/SOIL.h>
 
+#include <iostream>
+
 Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenum type, glm::vec2 size)
 {
     m_target = target;
@@ -53,6 +55,7 @@ void Texture::resize(glm::vec2 size) {
 
 void Texture::load(const std::string& filePath)
 {
+    std::cout << "Try to load " << filePath << std::endl;
     int width, height;
     unsigned char* image = SOIL_load_image(filePath.c_str(), &width, &height, 0, SOIL_LOAD_RGBA);
     if (sizeof(image) == 0) {
@@ -65,7 +68,7 @@ void Texture::load(const std::string& filePath)
     SOIL_free_image_data(image);
 }
 
-void Texture::generateTextureFromData(int width, int height, unsigned char* data)
+void Texture::generateTextureFromData(int width, int height, const unsigned char* data)
 {
     m_type = GL_UNSIGNED_BYTE;
     m_size = glm::vec2(width, height);

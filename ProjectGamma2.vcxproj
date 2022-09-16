@@ -145,7 +145,7 @@
       <AdditionalDependencies>soil.lib;assimp-vc143-mt.lib;PhysXCharacterKinematic_static_64.lib;PhysXPvdSDK_static_64.lib;PhysXExtensions_static_64.lib;PhysX_64.lib;PhysXCommon_64.lib;PhysXFoundation_64.lib;opengl32.lib;glew32.lib;glfw3.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>xcopy /y c:\Проекты\ProjectGamma2\Assets\*.* c:\Проекты\ProjectGamma2\x64\Release\App\Assets\*.*</Command>
+      <Command>xcopy /y /s c:\Проекты\ProjectGamma2\Assets\*.* c:\Проекты\ProjectGamma2\x64\Release\App\Assets\*.*</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -153,15 +153,18 @@
     <ClCompile Include="Asset.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CreateCanvasMesh.cpp" />
     <ClCompile Include="Framebuffers.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GLCheckError.cpp" />
     <ClCompile Include="InputMap.cpp" />
     <ClCompile Include="IPhysicComponent.cpp" />
+    <ClCompile Include="LightComponent.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Application.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
+    <ClCompile Include="Model.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="StaticMeshComponent.cpp" />
@@ -181,8 +184,10 @@
     <ClInclude Include="GLCheckError.h" />
     <ClInclude Include="InputMap.h" />
     <ClInclude Include="IPhysicComponent.h" />
+    <ClInclude Include="LightComponent.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
+    <ClInclude Include="Model.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="StaticMeshComponent.h" />

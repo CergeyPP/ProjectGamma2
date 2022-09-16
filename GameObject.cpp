@@ -10,6 +10,11 @@ GameObject::~GameObject()
 		delete elem;
 	}
 	m_children.clear();
+
+	for (auto& elem : m_components) {
+		delete elem;
+	}
+	m_components.clear();
 }
 
 GameObject::GameObject(Transform transform, GameObject* parent)

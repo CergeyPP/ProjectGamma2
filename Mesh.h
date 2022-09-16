@@ -10,7 +10,7 @@
 class IDrawable
 {
 public:
-	virtual void draw(Shader* shader = nullptr, glm::mat4 ProjectionView = glm::mat4(1), const Transform transform = Transform()) = 0;
+	virtual void draw(Shader* shader = nullptr, const glm::mat4& ProjectionView = glm::mat4(1), const Transform& transform = Transform()) = 0;
 };
 
 struct Vertex {
@@ -33,12 +33,18 @@ public:
 	Mesh(Material* material = nullptr);
 	~Mesh();
 
-	void draw(Shader* shader = nullptr, glm::mat4 ProjectionView = glm::mat4(1), const Transform transform = Transform()) override;
+	void draw(Shader* shader = nullptr, const glm::mat4& ProjectionView = glm::mat4(1), const Transform& transform = Transform()) override;
 
 	void init(std::vector<Vertex>& vertices, std::vector<GLuint>& indices);
 
-private:
+	void setMaterial(Material* material) {
+		if (m_material)
+			delete m_material;
 
+		m_material = material;
+	}
+
+private:
 
 	Material* m_material;
 

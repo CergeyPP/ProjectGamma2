@@ -11,19 +11,21 @@ Mesh::Mesh(Material* material)
 
 Mesh::~Mesh()
 {
+	if (m_material)
+		delete m_material;
 }
 
-void Mesh::draw(Shader* shader, glm::mat4 ProjectionView, const Transform transform)
+void Mesh::draw(Shader* shader, const glm::mat4& ProjectionView, const Transform& transform)
 {
 	if (shader == nullptr) {
 		if (m_material == nullptr) return;
 		m_material->mat4Param["ProjectionView"] = ProjectionView;
-		m_material->mat4Param["model"] = transform.matrix();
+		m_material->mat4Param["Model"] = transform.matrix();
 		m_material->use();
 	}
 	else {
 		glUseProgram(shader->getProgram());
-		shader->setUniform("ProjectionView", ProjectionView);
+		shader->setUniform("ProjectionView", (glm::mat4&)ProjectionView);
 		glm::mat4 model = transform.matrix();
 		shader->setUniform("Model", model);
 	}
@@ -101,5 +103,9 @@ Mesh* createBox(glm::vec3 size) {
 	};
 	Mesh* mesh = new Mesh;
 	mesh->init(vertices, indices);
+
+	vertices.clear();
+	indices.clear();
+
 	return mesh;
 }
