@@ -2,5 +2,5 @@
 #include "Mesh.h"
 
 namespace extend {
-	Mesh* createCanvas();
+	Mesh& getCanvas();
 }

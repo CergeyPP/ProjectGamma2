@@ -27,7 +27,7 @@ public:
 	glm::vec3 down();
 
 	Transform operator*(const Transform& other) {
-		glm::mat4 result = matrix() * other.matrix();
+		glm::mat4 result = other.matrix() * matrix();
 		Transform trans;
 		trans.fromMatrix(result);
 		return trans;

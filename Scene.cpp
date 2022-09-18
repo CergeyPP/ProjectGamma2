@@ -9,9 +9,12 @@
 
 #include <glm/gtx/string_cast.hpp>
 
+#include "CreateCanvasMesh.h"
+
 Scene::Scene()
 {
 	m_mainCamera = nullptr;
+	m_screenShader = Loader().getAsset<Shader>("Screen.shader");
 }
 
 Scene::~Scene()
@@ -34,20 +37,40 @@ Scene::~Scene()
 
 void Scene::init(const std::string& scenePath)
 {
-	GameObject* obj = spawn();
-	auto mesh = obj->createComponent<StaticMeshComponent>();
-	mesh->mesh = Application::get().Loader().getAsset<Model>("egirl/egirl.obj");
-		//createBox(glm::vec3(1));
 
-	GameObject* cameraObject = spawn(Transform(glm::vec3(4, 3, 2)));
+	GameObject* cameraObject = spawn(Transform(glm::vec3(0, 4, 4)));
 	auto moveScript = cameraObject->createComponent<CameraMovingScript>();
 	auto camera = cameraObject->createComponent<CameraComponent>();
 	camera->FOV = 90.f;
 	//camera->setRenderTarget(&colorFramebuffer);
 	setMainCamera(camera);
 
-	GameObject* lightObject = spawn(Transform(glm::vec3(0, 4, 0)));
+
+	GameObject* lightObject = spawn(Transform(glm::vec3(0,4,0), glm::vec3(glm::radians(45.f), glm::radians(180.f), 0)));
 	auto light = lightObject->createComponent<LightComponent>();
+	light->type = LightType::DIRECTIONAL;
+	light->diffuse = glm::vec4(0, 1, 0, 1);
+	light->specular = glm::vec4(0, 1, 0, 1);
+
+	for (int i = -2; i <= 2; i += 4) {
+			GameObject* lightObject = spawn(Transform(glm::vec3(i, 4, 2), glm::vec3(glm::radians(45.f), glm::radians(180.f), 0)));
+			auto light = lightObject->createComponent<LightComponent>();
+			light->type = LightType::POINT;
+			light->diffuse = glm::vec4(1,1,1,1);
+			light->specular = glm::vec4(1,1,1,1);
+			light->setDistance(40);
+	}
+
+
+
+	GameObject* floorObject = spawn(Transform(glm::vec3(0, -0.01, 0), glm::vec3(0), glm::vec3(40, 0.01, 40)));
+	auto floor = floorObject->createComponent<StaticMeshComponent>();
+	floor->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
+
+	GameObject* obj = spawn();
+	auto mesh = obj->createComponent<StaticMeshComponent>();
+	mesh->mesh = Application::get().Loader().getAsset<Model>("egirl/egirl.obj");
+	//createBox(glm::vec3(1));
 }
 
 void Scene::update()
@@ -72,9 +95,16 @@ void Scene::update()
 
 void Scene::draw()
 {
+	for (auto& camera : m_cameras) {
+		camera->render();
+	}
 	m_mainCamera->render();
 
+	glClear(GL_COLOR_BUFFER_BIT);
 
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(m_mainCamera->getRenderTexture()->target(), m_mainCamera->getRenderTexture()->GL());
+	extend::getCanvas().draw(m_screenShader);
 }
 
 GameObject* Scene::spawn(const Transform& transform, GameObject* parent)

@@ -66,7 +66,7 @@ void GameObject::setGlobalTransform(Transform& transform)
 	}
 	else {
 		Transform trans;
-		glm::mat4 matrix = glm::inverse(m_parent->getGlobalTransform().matrix() * transform.matrix());
+		glm::mat4 matrix = glm::inverse(m_parent->getGlobalTransform().matrix()) * transform.matrix();
 		trans.fromMatrix(matrix);
 		m_transform = trans;
 	}

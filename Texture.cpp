@@ -13,6 +13,13 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
 
     glGenTextures(1, &m_texture);
     glBindTexture(m_target, m_texture);
+    if (m_target == GL_TEXTURE_CUBE_MAP) {
+        for (int i = 0; i < 6; i++) {
+            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
+        }
+    }
+    else 
+        glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
 
     glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -20,7 +27,6 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
     glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
     glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
-    glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
     glBindTexture(m_target, 0);
 }
 

@@ -29,8 +29,9 @@ private:
 	float m_frameAspect;
 
 	Framebuffer m_framebuffer;
-	Framebuffer m_totalFramebuffer;
 	Renderbuffer m_renderbuffer;
+
+	Framebuffer m_totalFramebuffer;
 	
 	Texture* m_posTexture;
 	Texture* m_normalTexture;
@@ -39,9 +40,7 @@ private:
 
 	Texture* m_renderedTexture;
 
-	Mesh* m_canvas;
-
-	Shader* m_simple;
+	//Shader* m_simple;
 	Shader* m_unionShader;
 };
 

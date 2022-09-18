@@ -22,6 +22,18 @@
     <Filter Include="Исходные файлы\Extensions">
       <UniqueIdentifier>{467f42c9-6fe8-474e-a0a3-c9882463f163}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\Assets">
+      <UniqueIdentifier>{281167ec-9ca9-4e9d-96e4-fc710f75358e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Assets\egirl">
+      <UniqueIdentifier>{9f4b30b4-727b-406f-b8ac-e773ec504cd8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Assets\Cube">
+      <UniqueIdentifier>{ff9787fb-50db-43bf-8fe8-016d60b697de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\DLLs">
+      <UniqueIdentifier>{8e4e6876-a80b-4e21-9762-876cb17a09d4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -86,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="CreateCanvasMesh.cpp">
       <Filter>Исходные файлы\Extensions</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderPipeline.cpp">
+      <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,5 +170,151 @@
     <ClInclude Include="LightComponent.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="RenderPipeline.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\config.cfg">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\DefaultFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\DefaultLit.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\DefaultVertex.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\DepthDebug.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\FragmentSimple.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\Light.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\LightDirect.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\LightDirectFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\LightDirectVertex.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\LightFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\LightVertex.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\PostProcessFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\PostProcessVertex.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\Screen.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ScreenFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\Shadow.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ShadowDirect.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ShadowFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ShadowFragmentDirect.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ShadowGeometry.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ShadowVertex.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\ShadowVertexDirect.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\UnionFragment.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\UnionVertex.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\VertexSimple.glsl">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\egirl\egirl.mtl">
+      <Filter>Файлы ресурсов\Assets\egirl</Filter>
+    </None>
+    <None Include="Assets\Cube\simpleCube.fbx">
+      <Filter>Файлы ресурсов\Assets\Cube</Filter>
+    </None>
+    <None Include="x64\Release\App\assimp-vc143-mt.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\glew32.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\PhysX_64.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\PhysXCommon_64.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\PhysXCooking_64.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\PhysXDevice64.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\PhysXFoundation_64.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="x64\Release\App\PhysXGpu_64.dll">
+      <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Assets\InputMap.txt">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </Text>
+    <Text Include="Assets\PostProcessShader.txt">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </Text>
+    <Text Include="Assets\ShaderSimple.txt">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </Text>
+    <Text Include="Assets\UnionShader.txt">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\sample.png">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </Image>
+    <Image Include="Assets\egirl\Tak berjudul146_20220319165314.png">
+      <Filter>Файлы ресурсов\Assets\egirl</Filter>
+    </Image>
+    <Image Include="Assets\egirl\wanwan_high05_d2.png">
+      <Filter>Файлы ресурсов\Assets\egirl</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Assets\egirl\egirl.obj">
+      <Filter>Файлы ресурсов\Assets\egirl</Filter>
+    </Object>
   </ItemGroup>
 </Project>

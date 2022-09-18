@@ -1,14 +1,12 @@
 #include "Framebuffers.h"
 #include <iostream>
-#include "GLCheckError.h"
-
 
 Framebuffer::Framebuffer(GLenum read, GLenum draw)
 {
     glGenFramebuffers(1, &m_buffer);
     glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    //glReadBuffer(read);
-    //glDrawBuffer(draw);
+    glReadBuffer(read);
+    glDrawBuffer(draw);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -69,14 +67,25 @@ void Framebuffer::attachRenderbuffer(Renderbuffer* renderbuffer)
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
+Texture* Framebuffer::getTextureByAttachment(GLenum attachment) const
+{
+    int i;
+    for (i = 0; i < m_attachmentType.size(); i++) {
+        if (m_attachmentType[i] == attachment) break;
+    }
+    if (i == m_attachmentType.size()) return nullptr;
+
+    return m_bindTextures[i];
+}
+
 Renderbuffer::Renderbuffer(int width, int height)
 {
     glGenRenderbuffers(1, &m_buffer);
-    std::cout << glCheckError() << std::endl;
+    //std::cout << glCheckError() << std::endl;
     glBindRenderbuffer(GL_RENDERBUFFER, m_buffer);
-    std::cout << glCheckError() << std::endl;
+    //std::cout << glCheckError() << std::endl;
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
-    std::cout << glCheckError() << std::endl;
+    //std::cout << glCheckError() << std::endl;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 

@@ -26,6 +26,8 @@ public:
 	void attachTexture(Texture* texture, GLenum attachmentType);
 	void attachRenderbuffer(Renderbuffer* renderbuffer);
 
+	Texture* getTextureByAttachment(GLenum attachment) const;
+
 private:
 
 	GLuint m_buffer = -1;

@@ -9,17 +9,11 @@ CameraComponent::CameraComponent(GameObject* gameObject) : Component(gameObject)
     m_renderbuffer(Application::get().getWindowSize().x, Application::get().getWindowSize().y)
 {
 
-    m_simple = new Shader;
-    m_simple->load("Assets/ShaderSimple.txt");
-
-    m_unionShader = new Shader;
-    m_unionShader->load("Assets/UnionShader.txt");
+    m_unionShader = Loader().getAsset<Shader>("UnionShader.txt");
 
     FOV = 90.f;
     m_frameAspect = 16.f / 9.f;
     Application::get().scene().addCamera(this);
-
-    m_canvas = extend::createCanvas();
 
     m_posTexture =  new Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT, glm::vec2(Application::get().getWindowSize()));
     m_normalTexture = new Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT, glm::vec2(Application::get().getWindowSize()));
@@ -46,13 +40,12 @@ CameraComponent::CameraComponent(GameObject* gameObject) : Component(gameObject)
 CameraComponent::~CameraComponent()
 {
     Application::get().scene().deleteCamera(this);
-    delete m_unionShader;
-    delete m_canvas;
-    delete m_simple;
+
     delete m_normalTexture;
     delete m_posTexture;
     delete m_albedoTexture;
     delete m_specularTexture;
+    delete m_renderedTexture;
 }
 
 Texture* CameraComponent::getRenderTexture(){
@@ -64,7 +57,7 @@ glm::mat4 CameraComponent::getProjectionViewMatrix()
     glm::mat4 proj = glm::perspective(FOV / 2.f, m_frameAspect, 0.1f, 100.f);
 
     glm::mat4 view = glm::lookAt(gameObject()->getGlobalTransform().position,
-        /*gameObject()->getGlobalTransform().position + gameObject()->getGlobalTransform().forward(),*/glm::vec3(0, 0, 0),
+        gameObject()->getGlobalTransform().position + gameObject()->getGlobalTransform().forward(),
         glm::vec3(0, 1, 0));
 
     return proj * view;
@@ -74,7 +67,9 @@ void CameraComponent::render() {
     glm::mat4 pv = getProjectionViewMatrix();
     m_framebuffer.clear();
     m_framebuffer.bind();
+    glCullFace(GL_FRONT);
     Application::get().scene().drawCallEvent(pv, nullptr);
+    glCullFace(GL_BACK);
     m_framebuffer.unbind();
     
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -83,9 +78,8 @@ void CameraComponent::render() {
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_totalFramebuffer.clear();
-    m_totalFramebuffer.bind();
-
-    glActiveTexture(GL_TEXTURE0);
+    MainScene().lightPassEvent(m_framebuffer, m_totalFramebuffer, gameObject()->getGlobalTransform().position);
+    /*glActiveTexture(GL_TEXTURE0);
     glBindTexture(m_posTexture->target(), m_posTexture->GL());
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(m_normalTexture->target(), m_normalTexture->GL());
@@ -93,10 +87,5 @@ void CameraComponent::render() {
     glBindTexture(m_albedoTexture->target(), m_albedoTexture->GL());
     glActiveTexture(GL_TEXTURE3);
     glBindTexture(m_specularTexture->target(), m_specularTexture->GL());
-    //glActiveTexture(GL_TEXTURE0);
-    //glBindTexture(Loader().getAsset<Texture>("egirl/Tak berjudul146_20220319165314.png")->target(), Loader().getAsset<Texture>("egirl/Tak berjudul146_20220319165314.png")->GL());
-    m_canvas->draw(m_unionShader);
-
-    m_totalFramebuffer.unbind();
-    
+    extend::getCanvas().draw(m_unionShader);*/
 }

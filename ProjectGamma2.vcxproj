@@ -165,6 +165,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="RenderPipeline.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="StaticMeshComponent.cpp" />
@@ -188,12 +189,66 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="RenderPipeline.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="StaticMeshComponent.h" />
     <ClInclude Include="TEvent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Transform.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Assets\config.cfg" />
+    <None Include="Assets\Cube\simpleCube.fbx" />
+    <None Include="Assets\DefaultFragment.glsl" />
+    <None Include="Assets\DefaultLit.shader" />
+    <None Include="Assets\DefaultVertex.glsl" />
+    <None Include="Assets\DepthDebug.glsl" />
+    <None Include="Assets\egirl\egirl.mtl" />
+    <None Include="Assets\FragmentSimple.glsl" />
+    <None Include="Assets\Light.shader" />
+    <None Include="Assets\LightDirect.shader" />
+    <None Include="Assets\LightDirectFragment.glsl" />
+    <None Include="Assets\LightDirectVertex.glsl" />
+    <None Include="Assets\LightFragment.glsl" />
+    <None Include="Assets\LightVertex.glsl" />
+    <None Include="Assets\PostProcessFragment.glsl" />
+    <None Include="Assets\PostProcessVertex.glsl" />
+    <None Include="Assets\Screen.shader" />
+    <None Include="Assets\ScreenFragment.glsl" />
+    <None Include="Assets\Shadow.shader" />
+    <None Include="Assets\ShadowDirect.shader" />
+    <None Include="Assets\ShadowFragment.glsl" />
+    <None Include="Assets\ShadowFragmentDirect.glsl" />
+    <None Include="Assets\ShadowGeometry.glsl" />
+    <None Include="Assets\ShadowVertex.glsl" />
+    <None Include="Assets\ShadowVertexDirect.glsl" />
+    <None Include="Assets\UnionFragment.glsl" />
+    <None Include="Assets\UnionVertex.glsl" />
+    <None Include="Assets\VertexSimple.glsl" />
+    <None Include="x64\Release\App\assimp-vc143-mt.dll" />
+    <None Include="x64\Release\App\glew32.dll" />
+    <None Include="x64\Release\App\PhysXCommon_64.dll" />
+    <None Include="x64\Release\App\PhysXCooking_64.dll" />
+    <None Include="x64\Release\App\PhysXDevice64.dll" />
+    <None Include="x64\Release\App\PhysXFoundation_64.dll" />
+    <None Include="x64\Release\App\PhysXGpu_64.dll" />
+    <None Include="x64\Release\App\PhysX_64.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Assets\InputMap.txt" />
+    <Text Include="Assets\PostProcessShader.txt" />
+    <Text Include="Assets\ShaderSimple.txt" />
+    <Text Include="Assets\UnionShader.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Assets\egirl\Tak berjudul146_20220319165314.png" />
+    <Image Include="Assets\egirl\wanwan_high05_d2.png" />
+    <Image Include="Assets\sample.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Assets\egirl\egirl.obj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

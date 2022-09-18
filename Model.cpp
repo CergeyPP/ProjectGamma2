@@ -110,6 +110,7 @@ void Model::processMesh(aiMesh* aimesh, const aiScene* scene)
         float shininess;
         mat->Get(AI_MATKEY_SHININESS, shininess);
         material->floatParam["material.shininess"] = shininess;
+        std::cout << "Shininess : " << shininess << std::endl;
 
         mesh->setMaterial(material);
     }

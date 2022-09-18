@@ -216,7 +216,7 @@ void Shader::setUniform(const std::string name, float value)
     glUniform1f(loc, value);
 }
 
-void Shader::setUniform(const std::string name, glm::vec3& value)
+void Shader::setUniform(const std::string name, const glm::vec3& value)
 {
     glUseProgram(program_);
     if (uniformOffset_.find(name) == uniformOffset_.end()) {
@@ -228,7 +228,7 @@ void Shader::setUniform(const std::string name, glm::vec3& value)
     glUniform3f(loc, value.x, value.y, value.z);
 }
 
-void Shader::setUniform(const std::string name, glm::vec2& value)
+void Shader::setUniform(const std::string name, const glm::vec2& value)
 {
     glUseProgram(program_);
     if (uniformOffset_.find(name) == uniformOffset_.end()) {
@@ -240,7 +240,7 @@ void Shader::setUniform(const std::string name, glm::vec2& value)
     glUniform2f(loc, value.x, value.y);
 }
 
-void Shader::setUniform(const std::string name, glm::vec4& value)
+void Shader::setUniform(const std::string name, const glm::vec4& value)
 {
     glUseProgram(program_);
     if (uniformOffset_.find(name) == uniformOffset_.end()) {
@@ -252,7 +252,7 @@ void Shader::setUniform(const std::string name, glm::vec4& value)
     glUniform4f(loc, value.x, value.y, value.z, value.w);
 }
 
-void Shader::setUniform(const std::string name, glm::mat3& value)
+void Shader::setUniform(const std::string name, const glm::mat3& value)
 {
     glUseProgram(program_);
     if (uniformOffset_.find(name) == uniformOffset_.end()) {
@@ -264,7 +264,7 @@ void Shader::setUniform(const std::string name, glm::mat3& value)
     glUniformMatrix3fv(loc, 1, 0, glm::value_ptr(value));
 }
 
-void Shader::setUniform(const std::string name, glm::mat4& value)
+void Shader::setUniform(const std::string name, const glm::mat4& value)
 {
     glUseProgram(program_);
     if (uniformOffset_.find(name) == uniformOffset_.end()) {

@@ -17,7 +17,7 @@ public:
 	void init(const std::string& scenePath);
 
 	extend::TEvent<glm::mat4&, Shader*> drawCallEvent;
-	extend::TEvent<Framebuffer&, Framebuffer&> lightProcessEvent;
+	extend::TEvent<Framebuffer&, Framebuffer&, glm::vec3> lightPassEvent;
 
 	//logicEvents
 	extend::TEvent<> beginPlayEvent;
@@ -48,5 +48,7 @@ private:
 	std::vector<GameObject*> m_instancedObjects;
 	std::vector<GameObject*> m_objects;
 	std::vector<GameObject*> m_deadObjects;
+
+	Shader* m_screenShader;
 };
 
