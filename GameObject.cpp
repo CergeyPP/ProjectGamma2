@@ -46,7 +46,7 @@ Transform GameObject::getGlobalTransform()
 {
 	if (m_parent == nullptr)
 		return m_transform;
-	else return m_parent->getGlobalTransform() * m_transform;
+	else return m_transform * m_parent->getGlobalTransform();
 }
 
 Transform GameObject::getLocalTransform()

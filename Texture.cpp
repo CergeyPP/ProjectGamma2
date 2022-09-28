@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenum type, glm::vec2 size)
+Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenum type, glm::vec2 size, bool multisampled)
 {
     m_target = target;
     m_size = size;
@@ -12,21 +12,25 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
     m_type = type;
 
     glGenTextures(1, &m_texture);
+    
     glBindTexture(m_target, m_texture);
     if (m_target == GL_TEXTURE_CUBE_MAP) {
         for (int i = 0; i < 6; i++) {
+            //glTexImage2DMultisample(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internationalformat, (int)size.x, (int)size.y, true);
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
         }
     }
-    else 
+    else if (m_target == GL_TEXTURE_2D_MULTISAMPLE)
+        glTexImage2DMultisample(m_target, 4, m_format, (int)size.x, (int)size.y, GL_FALSE);
+    else
         glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
 
-    glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-
+    glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glGenerateMipmap(m_target);
     glBindTexture(m_target, 0);
 }
 
@@ -55,7 +59,7 @@ void Texture::resize(glm::vec2 size) {
     m_size = size;
 
     glBindTexture(m_target, m_texture);
-    glTexImage2D(m_target, 0, m_format, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
+    glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
     glBindTexture(m_target, 0);
 }
 
@@ -95,6 +99,13 @@ void Texture::generateTextureFromData(int width, int height, const unsigned char
     glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
 
     glTexImage2D(m_target, 0, m_internationalformat, width, height, 0, m_format, m_type, data);
+    glGenerateMipmap(m_target);
+    glBindTexture(m_target, 0);
+}
+
+void Texture::genMipmaps()
+{
+    glBindTexture(m_target, m_texture);
     glGenerateMipmap(m_target);
     glBindTexture(m_target, 0);
 }

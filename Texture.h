@@ -8,7 +8,7 @@ class Texture : public IAsset
 {
 public:
 
-	Texture(GLenum target = GL_TEXTURE_2D, GLenum intenationalformat = GL_RGBA, GLenum format = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE, glm::vec2 size = glm::vec2(1));
+	Texture(GLenum target = GL_TEXTURE_2D, GLenum intenationalformat = GL_RGBA, GLenum format = GL_RGBA, GLenum type = GL_UNSIGNED_BYTE, glm::vec2 size = glm::vec2(1), bool multisampled = false);
 	~Texture();
 
 	GLuint GL();
@@ -19,6 +19,8 @@ public:
 
 	void load(const std::string& filePath) override;
 	void generateTextureFromData(int width, int height, const unsigned char* data);
+
+	void genMipmaps();
 
 private:
 

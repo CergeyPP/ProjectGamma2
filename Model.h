@@ -16,6 +16,10 @@ public:
     void load(const std::string& filename) override;
     void draw(Shader* shader, const glm::mat4& ProjectionView = glm::mat4(1), const Transform& transform = Transform()) override;
 
+    Mesh* getMesh(int index) {
+        return m_meshes[index];
+    }
+
 private:
 
     std::string m_directory;

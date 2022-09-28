@@ -34,6 +34,12 @@
     <Filter Include="Файлы ресурсов\DLLs">
       <UniqueIdentifier>{8e4e6876-a80b-4e21-9762-876cb17a09d4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Файлы ресурсов\Assets\Old Shaders">
+      <UniqueIdentifier>{13e2a2f9-7220-4b74-a7e2-49019b15ab16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Файлы ресурсов\Assets\Sphere">
+      <UniqueIdentifier>{23e1c6f6-100b-4e76-9e71-992a93f2e158}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -100,6 +106,9 @@
       <Filter>Исходные файлы\Extensions</Filter>
     </ClCompile>
     <ClCompile Include="RenderPipeline.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="DefferedRenderPipeline.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -174,6 +183,9 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="DefferedRenderPipeline.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
@@ -285,6 +297,54 @@
     </None>
     <None Include="x64\Release\App\PhysXGpu_64.dll">
       <Filter>Файлы ресурсов\DLLs</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\DepthDebug.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\FragmentSimple.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\Light.shader">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\LightDirect.shader">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\LightDirectFragment.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\LightDirectVertex.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\LightFragment.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\LightVertex.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\Shadow.shader">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\ShadowDirect.shader">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\ShadowFragment.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\ShadowFragmentDirect.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\ShadowGeometry.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\ShadowVertex.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\ShadowVertexDirect.glsl">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Sphere\simpleSphere.fbx">
+      <Filter>Файлы ресурсов\Assets\Sphere</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

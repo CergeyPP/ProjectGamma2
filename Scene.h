@@ -16,9 +16,6 @@ public:
 
 	void init(const std::string& scenePath);
 
-	extend::TEvent<glm::mat4&, Shader*> drawCallEvent;
-	extend::TEvent<Framebuffer&, Framebuffer&, glm::vec3> lightPassEvent;
-
 	//logicEvents
 	extend::TEvent<> beginPlayEvent;
 	extend::TEvent<> tickEvent;
@@ -40,10 +37,7 @@ public:
 
 private:
 
-	void setMainCamera(CameraComponent* camera);
-
 	std::vector<CameraComponent*> m_cameras;
-	CameraComponent* m_mainCamera;
 
 	std::vector<GameObject*> m_instancedObjects;
 	std::vector<GameObject*> m_objects;

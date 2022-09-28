@@ -3,12 +3,11 @@
 
 glm::mat4 Transform::matrix() const
 {
-    glm::mat4 mat;
-    mat = glm::translate(glm::mat4(1), position);
-    mat *= glm::mat4_cast(rotation);
-    mat = glm::scale(mat, scale);
+    glm::mat4 trans = glm::translate(glm::mat4(1), position);
+    glm::mat4 rot = glm::mat4_cast(rotation);
+    glm::mat4 scal = glm::scale(glm::mat4(1), scale);
 
-    return mat;
+    return trans * rot * scal;
 }
 
 void Transform::fromMatrix(glm::mat4& matrix)

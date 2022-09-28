@@ -13,7 +13,6 @@
 
 Scene::Scene()
 {
-	m_mainCamera = nullptr;
 	m_screenShader = Loader().getAsset<Shader>("Screen.shader");
 }
 
@@ -43,31 +42,30 @@ void Scene::init(const std::string& scenePath)
 	auto camera = cameraObject->createComponent<CameraComponent>();
 	camera->FOV = 90.f;
 	//camera->setRenderTarget(&colorFramebuffer);
-	setMainCamera(camera);
 
+	GameObject* lightObject = spawn(Transform(glm::vec3(0,2,0), glm::vec3(glm::radians(45.f), glm::radians(90.f), 0)));
+	auto light = lightObject->createComponent<DirectLight>();
+	light->diffuse = glm::vec4(1, 1, 1, 1);
+	light->specular = glm::vec4(1, 1, 1, 1);
+	GameObject* lightMObject = spawn(Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0.1, 0.1, 1)), lightObject);
+	auto lightM = lightMObject->createComponent<StaticMeshComponent>();
+	lightM->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
 
-	GameObject* lightObject = spawn(Transform(glm::vec3(0,4,0), glm::vec3(glm::radians(45.f), glm::radians(180.f), 0)));
-	auto light = lightObject->createComponent<LightComponent>();
-	light->type = LightType::DIRECTIONAL;
-	light->diffuse = glm::vec4(0, 1, 0, 1);
-	light->specular = glm::vec4(0, 1, 0, 1);
-
-	for (int i = -2; i <= 2; i += 4) {
-			GameObject* lightObject = spawn(Transform(glm::vec3(i, 4, 2), glm::vec3(glm::radians(45.f), glm::radians(180.f), 0)));
-			auto light = lightObject->createComponent<LightComponent>();
-			light->type = LightType::POINT;
-			light->diffuse = glm::vec4(1,1,1,1);
-			light->specular = glm::vec4(1,1,1,1);
-			light->setDistance(40);
-	}
-
-
-
-	GameObject* floorObject = spawn(Transform(glm::vec3(0, -0.01, 0), glm::vec3(0), glm::vec3(40, 0.01, 40)));
+	GameObject* floorObject = spawn(Transform(glm::vec3(0, -0.02, 0), glm::vec3(0), glm::vec3(40, 0.01, 40)));
 	auto floor = floorObject->createComponent<StaticMeshComponent>();
 	floor->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
 
-	GameObject* obj = spawn();
+	/*for (int i = -2; i <= 2; i += 4) {
+			GameObject* lightObject = spawn(Transform(glm::vec3(i, 4, 2)));
+			auto light = lightObject->createComponent<DirectLight>();
+
+			light->diffuse = glm::vec4(1,1,1,1);
+			light->specular = glm::vec4(1,1,1,1);
+	}*/
+
+	
+
+	GameObject* obj = spawn(Transform(glm::vec3(-4, 0, 0)));
 	auto mesh = obj->createComponent<StaticMeshComponent>();
 	mesh->mesh = Application::get().Loader().getAsset<Model>("egirl/egirl.obj");
 	//createBox(glm::vec3(1));
@@ -96,15 +94,16 @@ void Scene::update()
 void Scene::draw()
 {
 	for (auto& camera : m_cameras) {
-		camera->render();
+		Application::get().getPipeline().drawFrom(camera);
 	}
-	m_mainCamera->render();
 
-	glClear(GL_COLOR_BUFFER_BIT);
+	Application::get().getPipeline().showOnScreen();
 
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(m_mainCamera->getRenderTexture()->target(), m_mainCamera->getRenderTexture()->GL());
-	extend::getCanvas().draw(m_screenShader);
+	//glClear(GL_COLOR_BUFFER_BIT);
+
+	//glActiveTexture(GL_TEXTURE0);
+	//glBindTexture(m_mainCamera->getRenderTexture()->target(), m_mainCamera->getRenderTexture()->GL());
+	//extend::getCanvas().draw(m_screenShader);
 }
 
 GameObject* Scene::spawn(const Transform& transform, GameObject* parent)
@@ -144,15 +143,4 @@ void Scene::deleteCamera(CameraComponent* camera)
 	if (it != m_cameras.end()) {
 		m_cameras.erase(it);
 	}
-	else {
-		if (m_mainCamera == camera) {
-			m_mainCamera = nullptr;
-		}
-	}
-}
-
-void Scene::setMainCamera(CameraComponent* camera)
-{
-	deleteCamera(camera);
-	m_mainCamera = camera;
 }

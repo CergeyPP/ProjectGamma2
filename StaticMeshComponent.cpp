@@ -13,7 +13,7 @@ StaticMeshComponent::~StaticMeshComponent()
 	DisableEvent();
 }
 
-void StaticMeshComponent::drawCall(glm::mat4& ProjectionView, Shader* shader)
+void StaticMeshComponent::drawCall(const glm::mat4& ProjectionView, Shader* shader)
 {
 	if (mesh == nullptr) return;
 	mesh->draw(shader, ProjectionView, gameObject()->getGlobalTransform());
@@ -21,10 +21,10 @@ void StaticMeshComponent::drawCall(glm::mat4& ProjectionView, Shader* shader)
 
 void StaticMeshComponent::DisableEvent()
 {
-	MainScene().drawCallEvent -= MY_METHOD_HANDLER(StaticMeshComponent::drawCall);
+	Application::get().getPipeline().deleteDrawable(this);
 }
 
 void StaticMeshComponent::EnableEvent()
 {
-	MainScene().drawCallEvent += MY_METHOD_HANDLER(StaticMeshComponent::drawCall);
+	Application::get().getPipeline().addDrawable(this);
 }

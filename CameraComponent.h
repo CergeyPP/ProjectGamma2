@@ -14,6 +14,7 @@ public:
 	~CameraComponent() override;
 
 	Texture* getRenderTexture();
+	void attachTetxure(Texture* texture);
 
 	void render();
 
@@ -28,19 +29,6 @@ private:
 
 	float m_frameAspect;
 
-	Framebuffer m_framebuffer;
-	Renderbuffer m_renderbuffer;
-
-	Framebuffer m_totalFramebuffer;
-	
-	Texture* m_posTexture;
-	Texture* m_normalTexture;
-	Texture* m_albedoTexture;
-	Texture* m_specularTexture;
-
-	Texture* m_renderedTexture;
-
-	//Shader* m_simple;
-	Shader* m_unionShader;
+	Texture* m_attachedTexture;
 };
 

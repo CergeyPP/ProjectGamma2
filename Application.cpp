@@ -9,6 +9,8 @@
 //#include "Mesh.h"
 #include "InputMap.h"
 
+#include "DefferedRenderPipeline.h"
+
 
 Application::Application()
 {
@@ -25,9 +27,6 @@ Application::Application()
 	m_deltaTime = 0;
 	m_mousePos = glm::vec2(0);
 	m_time = 0;
-
-	m_depthFramebuffer = nullptr;
-	m_depthTexture = nullptr;
 }
 
 Application::~Application()
@@ -35,10 +34,6 @@ Application::~Application()
 	m_window = nullptr;
 	m_windowSize = glm::vec2(0);
 
-	delete m_depthFramebuffer;
-	delete m_depthTexture;
-	delete m_depthFramebuffer2D;
-	delete m_depthTexture2D;
 }
 
 glm::vec2 Application::getWindowSize()
@@ -85,22 +80,10 @@ void Application::init()
 	glfwSetKeyCallback(m_window, KeyCallback);
 	glfwSetScrollCallback(m_window, ScrollCallback);
 
+	m_pipeline = new DefferedRenderPipeline;
+
 	m_scene = new Scene;
 	m_scene->init("");
-
-	m_depthFramebuffer = new Framebuffer(GL_NONE, GL_NONE);
-	m_depthTexture = new Texture(GL_TEXTURE_CUBE_MAP, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, glm::vec2(SHADOW_WIDTH, SHADOW_HEIGHT));
-	m_depthFramebuffer->attachTexture(m_depthTexture, GL_DEPTH_ATTACHMENT);
-
-	m_depthFramebuffer2D = new Framebuffer(GL_NONE, GL_NONE);
-	m_depthTexture2D = new Texture(GL_TEXTURE_2D, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT, GL_FLOAT, glm::vec2(SHADOW_WIDTH * 4, SHADOW_HEIGHT * 4));
-	m_depthFramebuffer2D->attachTexture(m_depthTexture2D, GL_DEPTH_ATTACHMENT);
-	glBindTexture(GL_TEXTURE_2D, m_depthTexture2D->GL());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	glm::vec4 clampColor(1);
-	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, &(clampColor[0]));
-	glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void Application::start()

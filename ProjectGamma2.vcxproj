@@ -154,6 +154,7 @@
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CreateCanvasMesh.cpp" />
+    <ClCompile Include="DefferedRenderPipeline.cpp" />
     <ClCompile Include="Framebuffers.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="GLCheckError.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="CameraMovingScript.h" />
     <ClInclude Include="Component.h" />
     <ClInclude Include="CreateCanvasMesh.h" />
+    <ClInclude Include="DefferedRenderPipeline.h" />
     <ClInclude Include="Framebuffers.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="GLCheckError.h" />
@@ -213,6 +215,21 @@
     <None Include="Assets\LightDirectVertex.glsl" />
     <None Include="Assets\LightFragment.glsl" />
     <None Include="Assets\LightVertex.glsl" />
+    <None Include="Assets\Old Shaders\DepthDebug.glsl" />
+    <None Include="Assets\Old Shaders\FragmentSimple.glsl" />
+    <None Include="Assets\Old Shaders\Light.shader" />
+    <None Include="Assets\Old Shaders\LightDirect.shader" />
+    <None Include="Assets\Old Shaders\LightDirectFragment.glsl" />
+    <None Include="Assets\Old Shaders\LightDirectVertex.glsl" />
+    <None Include="Assets\Old Shaders\LightFragment.glsl" />
+    <None Include="Assets\Old Shaders\LightVertex.glsl" />
+    <None Include="Assets\Old Shaders\Shadow.shader" />
+    <None Include="Assets\Old Shaders\ShadowDirect.shader" />
+    <None Include="Assets\Old Shaders\ShadowFragment.glsl" />
+    <None Include="Assets\Old Shaders\ShadowFragmentDirect.glsl" />
+    <None Include="Assets\Old Shaders\ShadowGeometry.glsl" />
+    <None Include="Assets\Old Shaders\ShadowVertex.glsl" />
+    <None Include="Assets\Old Shaders\ShadowVertexDirect.glsl" />
     <None Include="Assets\PostProcessFragment.glsl" />
     <None Include="Assets\PostProcessVertex.glsl" />
     <None Include="Assets\Screen.shader" />
@@ -224,6 +241,7 @@
     <None Include="Assets\ShadowGeometry.glsl" />
     <None Include="Assets\ShadowVertex.glsl" />
     <None Include="Assets\ShadowVertexDirect.glsl" />
+    <None Include="Assets\Sphere\simpleSphere.fbx" />
     <None Include="Assets\UnionFragment.glsl" />
     <None Include="Assets\UnionVertex.glsl" />
     <None Include="Assets\VertexSimple.glsl" />
@@ -248,7 +266,9 @@
     <Image Include="Assets\sample.png" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="Assets\egirl\egirl.obj" />
+    <Object Include="Assets\egirl\egirl.obj">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </Object>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

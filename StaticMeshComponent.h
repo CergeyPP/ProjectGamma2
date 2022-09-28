@@ -12,7 +12,7 @@ public:
 
 	IDrawable* mesh;
 
-	void drawCall(glm::mat4& ProjectionView, Shader* shader = nullptr);
+	void drawCall(const glm::mat4& ProjectionView, Shader* shader = nullptr);
 
 private:
 

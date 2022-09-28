@@ -11,6 +11,6 @@ out vec4 color;
 
 void main(){
 	//color = texture(normal, TexCoords);
-	color = texture(specular, TexCoords);
+	color = texture(albedo, TexCoords);
 	//color = vec4(1,0,0,1);
 }

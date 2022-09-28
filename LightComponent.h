@@ -17,34 +17,68 @@ public:
     LightComponent(GameObject* object);
     ~LightComponent() override;
 
-    LightType type;
     glm::vec4 diffuse;
     glm::vec4 specular;
-    float linear;
-    float quadratic;
-    float cutoff;
 
-    void setDistance(float distance)
-    {
-        linear = 4.5 / distance;
-        quadratic = 75 / distance / distance;
-    }
-
-    float getDistance(float distance)
-    {
-        return 4.5 / linear;
-    }
-
+    virtual LightType getType() = 0;
+    
 private:
-
-    void lightProcess(Framebuffer& sourceBuffer, Framebuffer& colorFramebuffer, glm::vec3 viewPos);
 
     void DisableEvent() override;
     void EnableEvent() override;
-
-    Shader* m_depthPassShader;
-    Shader* m_lightPassShader;
-    Shader* m_directDepthPassShader;
-    Shader* m_directLightPassShader;
 };
 
+class DirectLight
+    : public LightComponent 
+{
+public:
+
+    DirectLight(GameObject* parent) : LightComponent(parent) {
+
+    }
+    ~DirectLight() override {
+
+    }
+
+    LightType getType() override {
+        return LightType::DIRECTIONAL;
+    }
+};
+
+class PointLight : public LightComponent {
+public:
+
+    PointLight(GameObject* parent) : LightComponent(parent) {
+        radius = 0;
+    }
+    ~PointLight() override {
+
+    }
+
+    LightType getType() override {
+        return LightType::POINT;
+    }
+
+    float radius;
+};
+
+class SpotLight : public LightComponent {
+public:
+
+    SpotLight(GameObject* parent) : LightComponent(parent) {
+        range = 0;
+        innerCutoff = 0;
+        outerCutoff = 0;
+    }
+    ~SpotLight() override {
+
+    }
+
+    LightType getType() override {
+        return LightType::SPOT;
+    }
+
+    float range;
+    float innerCutoff;
+    float outerCutoff;
+};

@@ -1,0 +1,16 @@
+ float ChebyshevUpperBound(float2 Moments, float t) {   
+	// One-tailed inequality valid if t > Moments.x    
+	float p = (t <= Moments.x);   // Compute variance.    
+	float Variance = Moments.y – (Moments.x*Moments.x);   
+	Variance = max(Variance, g_MinVariance);   
+	// Compute probabilistic upper bound.    
+	float d = t – Moments.x;   
+	float p_max = Variance / (Variance + d*d);   
+	return max(p, p_max); 
+} 
+float ShadowContribution(float2 LightTexCoord, float DistanceToLight) {   
+	// Read the moments from the variance shadow map.    
+	float2 Moments = texShadow.Sample(ShadowSampler, LightTexCoord).xy;   
+	// Compute the Chebyshev upper bound.    
+	return ChebyshevUpperBound(Moments, DistanceToLight); 
+} 

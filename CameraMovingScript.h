@@ -28,7 +28,7 @@ private:
 	float m_yaw = 0;
 
 	void beginPlay() override {
-		m_speed = 0;
+		m_speed = 5;
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Jump"]->event += MY_METHOD_HANDLER(CameraMovingScript::jump);
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Move"]->event += MY_METHOD_HANDLER(CameraMovingScript::move);
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Look"]->event += MY_METHOD_HANDLER(CameraMovingScript::look);
@@ -40,8 +40,8 @@ private:
 		//std::cout << "MovementVector: " << glm::to_string(moveVec) << std::endl;
 
 		Transform transform = gameObject()->getLocalTransform();
-		transform.position += delta * moveVec.x * transform.forward();
-		transform.position += delta * moveVec.y * transform.right();
+		transform.position += delta * moveVec.x * transform.forward() * m_speed;
+		transform.position += delta * moveVec.y * transform.right() * m_speed;
 
 		gameObject()->setLocalTransform(transform);
 	}

@@ -5,9 +5,8 @@
 
 #include "Asset.h"
 #include "Scene.h"
+#include "RenderPipeline.h"
 
-#define SHADOW_WIDTH 512
-#define SHADOW_HEIGHT 512
 
 class Application
 {
@@ -34,21 +33,10 @@ public:
 		return m_deltaTime;
 	}
 
-	Framebuffer& getDepthFramebuffer2D() {
-		return *m_depthFramebuffer2D;
+	RenderPipeline& getPipeline() {
+		return *m_pipeline;
 	}
 
-	Texture& getDepthTexture2D() {
-		return *m_depthTexture2D;
-	}
-
-	Framebuffer& getDepthFramebuffer() {
-		return *m_depthFramebuffer;
-	}
-
-	Texture& getDepthTexture() {
-		return *m_depthTexture;
-	}
 
 private:
 
@@ -75,11 +63,7 @@ private:
 	static void ScrollCallback(GLFWwindow* window, double xpos, double ypos);
 	static void CloseCallback(GLFWwindow* window);
 
-	Framebuffer* m_depthFramebuffer;
-	Texture* m_depthTexture;
-
-	Framebuffer* m_depthFramebuffer2D;
-	Texture* m_depthTexture2D;
+	RenderPipeline* m_pipeline;
 };
 
 AssetLoader& Loader();
