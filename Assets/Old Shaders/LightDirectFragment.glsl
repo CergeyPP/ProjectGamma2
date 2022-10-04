@@ -23,7 +23,7 @@ uniform mat4 LightPV;
 
 uniform Light light;
 
-uniform vec3 viewPos;
+uniform vec3 ViewPos;
 
 out vec4 color;
 
@@ -95,13 +95,14 @@ void main(){
 
 	vec3 fragPos = vec3(texture(position, TexCoords));
 
-	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 viewDir = normalize(ViewPos - fragPos);
 
 	float shadow = ShadowCalculation(fragPos);
 
 	vec3 resultColor = calculateDirectionLight(light, norm, fragPos, viewDir) * ShadowCalculation(fragPos);
+;
 	color = texture(framebuffer, TexCoords) + vec4(resultColor, 1.0);
-	//vec3 fragToLight = fragPos - viewPos;	
+	//vec3 fragToLight = fragPos - ViewPos;	
 	//float closestDepth = texture(depthMap, fragToLight).r;
 	//color = texture(framebuffer, TexCoords) + vec4(vec3(closestDepth/farPlane), 1.0);
 }

@@ -1,9 +1,11 @@
 #version 450 core
-#define DIRECTIONAL 0
-#define POINT 1
-#define SPOT 2
+#define LINEAR 6
+#define QUADRATIC 200
 
-in vec2 TexCoords;
+in vec4 screenPos;
+vec2 TexCoords;
+
+in vec4 globalPos;
 
 uniform sampler2D position;
 uniform sampler2D normal;
@@ -15,21 +17,15 @@ uniform samplerCube depthMap;
 uniform sampler2D framebuffer;
 
 struct Light{
-	int type;
-	float cutoff;
-	float linear;
-	float quadratic;
 	vec4 diffuse;
 	vec4 specular;	
 	vec4 position;
-	vec4 direction;
+	float radius;
 };
-
-uniform float farPlane;
 
 uniform Light light;
 
-uniform vec3 viewPos;
+in vec3 ViewPos;
 
 out vec4 color;
 
@@ -69,7 +65,7 @@ float ShadowContribution(vec3 texCoords, float Distance){
 float ShadowCalculation(vec3 fragPos){
 	
 	vec3 fragToLight = fragPos - vec3(light.position);
-	float currentDepth = length(fragToLight) / farPlane;
+	float currentDepth = length(fragToLight) / light.radius;
 
 	float closestDepth = ShadowContribution(fragToLight, currentDepth);
 	//closestDepth *= farPlane;
@@ -82,28 +78,15 @@ float ShadowCalculation(vec3 fragPos){
 	return closestDepth;
 }
 
-vec3 calculateDirectionLight(Light directLight, vec3 norm, vec3 FragPos, vec3 viewDir){
-
-	vec3 lightDir = normalize(vec3(-directLight.direction));
-
-	vec3 diffuseLight = max(dot(norm, lightDir),0) * vec3(directLight.diffuse) * directLight.diffuse.a;
-	vec3 diffuse = diffuseLight * vec3(texture(albedo, TexCoords));
-
-	vec4 spec = texture(specular, TexCoords);
-	float shininess = spec.a * 256;
-
-	vec3 halfways = normalize(lightDir + viewDir);
-	float specularPower = pow(max(dot(norm,halfways), 0), shininess);
-	vec3 specular = vec3(directLight.specular) * specularPower * vec3(texture(specular, TexCoords)) * directLight.specular.a;
-
-	return diffuse + specular;
-}
-
 vec3 calculatePointLight(Light pointLight, vec3 norm, vec3 FragPos, vec3 viewDir){
+
+	//float linear = LINEAR / pointLight.radius;
+	//float quadratic = QUADRATIC / (pointLight.radius * pointLight.radius);
+
 	vec3 lightDir = vec3(pointLight.position) - FragPos;
 	float distance = length(lightDir);
-	float attenuation = 1/(1 + pointLight.linear * distance + 
-		pointLight.quadratic * pointLight.quadratic * distance);
+	float attenuation = 1 / distance / distance;
+	//float attenuation = 0.8;
 	lightDir = normalize(lightDir);
 
 	vec3 diffuseLight = max(dot(norm, lightDir),0) * vec3(pointLight.diffuse) * pointLight.diffuse.a;
@@ -116,68 +99,62 @@ vec3 calculatePointLight(Light pointLight, vec3 norm, vec3 FragPos, vec3 viewDir
 	float specularPower = pow(max(dot(norm, halfways), 0), shininess);
 	vec3 specular = vec3(pointLight.specular) * specularPower * vec3(texture(specular, TexCoords)) * pointLight.specular.a;
 
-	return (diffuse + specular)*attenuation;
+	float depth = length(ViewPos - globalPos.xyz) - length(ViewPos - FragPos);
 
+	return (diffuse + specular)*attenuation*clamp(depth, 0.0, 1.0);
 
 }
 
-vec3 calculateSpotLight(Light light, vec3 norm, vec3 FragPos, vec3 viewDir){
+// vec3 calculateSpotLight(Light light, vec3 norm, vec3 FragPos, vec3 viewDir){
 
-	vec3 lightDir = normalize(vec3(-light.direction));
+// 	vec3 lightDir = normalize(vec3(-light.direction));
     
-    // check if lighting is inside the spotlight cone
-    float theta = dot(lightDir, vec3(normalize(viewDir))); 
+//     // check if lighting is inside the spotlight cone
+//     float theta = dot(lightDir, vec3(normalize(viewDir))); 
     
-    if(theta > light.cutoff) // remember that we're working with angles as cosines instead of degrees so a '>' is used.
-    {            
-        // diffuse 
-        float diff = max(dot(norm, lightDir), 0.0);
-        vec3 diffuse = vec3(light.diffuse) * diff * texture(albedo, TexCoords).rgb;  
+//     if(theta > light.cutoff) // remember that we're working with angles as cosines instead of degrees so a '>' is used.
+//     {            
+//         // diffuse 
+//         float diff = max(dot(norm, lightDir), 0.0);
+//         vec3 diffuse = vec3(light.diffuse) * diff * texture(albedo, TexCoords).rgb;  
         
-        // specular 
-		vec4 spec = texture(specular, TexCoords);
-		float shininess = spec.a * 256;
+//         // specular 
+// 		vec4 spec = texture(specular, TexCoords);
+// 		float shininess = spec.a * 256;
 
-        vec3 halfways = normalize(lightDir + viewDir);
-		float specularPower = pow(max(dot(norm, halfways), 0), shininess);
-		vec3 specular = vec3(light.specular) * specularPower * vec3(texture(albedo, TexCoords)) * light.specular.a;  
+//         vec3 halfways = normalize(lightDir + viewDir);
+// 		float specularPower = pow(max(dot(norm, halfways), 0), shininess);
+// 		vec3 specular = vec3(light.specular) * specularPower * vec3(texture(albedo, TexCoords)) * light.specular.a;  
         
-        // attenuation
-        float distance    = length(vec3(light.position) - FragPos);
-        float attenuation = 1.0 / (1 + light.linear * distance + light.quadratic * (distance * distance));    
+//         // attenuation
+//         float distance    = length(vec3(light.position) - FragPos);
+//         float attenuation = 1.0 / (1 + light.linear * distance + light.quadratic * (distance * distance));    
 
-        // ambient  *= attenuation; // remove attenuation from ambient, as otherwise at large distances the light would be darker inside than outside the spotlight due the ambient term in the else branche
-        diffuse   *= attenuation;
-        specular *= attenuation;   
+//         // ambient  *= attenuation; // remove attenuation from ambient, as otherwise at large distances the light would be darker inside than outside the spotlight due the ambient term in the else branche
+//         diffuse   *= attenuation;
+//         specular *= attenuation;   
 
-        return diffuse + specular;
-    }
+//         return diffuse + specular;
+//     }
 
-    return vec3(0,0,0);
-}
+//     return vec3(0,0,0);
+// }
 
 void main(){
+
+	vec3 screenCoords = screenPos.xyz / screenPos.w;
+	TexCoords = vec2(screenCoords * 0.5 + 0.5);
+
 	vec3 norm = normalize(vec3(texture(normal, TexCoords)));
 
 	vec3 fragPos = vec3(texture(position, TexCoords));
 
-	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 viewDir = normalize(ViewPos - fragPos);
 
-	vec3 resultColor = vec3(0,0,0);
-	switch(light.type){
-			case DIRECTIONAL:
-				resultColor += calculateDirectionLight(light, norm, fragPos, viewDir) * ShadowCalculation(fragPos);
-			break;
-			case POINT:
-				resultColor += calculatePointLight(light, norm, fragPos, viewDir) * ShadowCalculation(fragPos);
-			break;
-			case SPOT:
-				resultColor += calculateSpotLight(light, norm, fragPos, viewDir) * ShadowCalculation(fragPos);
-			break;
-		}
-
+	vec3 resultColor = calculatePointLight(light, norm, fragPos, viewDir) //* ShadowCalculation(fragPos);
+			;
 	color = texture(framebuffer, TexCoords) + vec4(resultColor, 1.0);
-	//vec3 fragToLight = fragPos - viewPos;
-	//float closestDepth = texture(depthMap, fragToLight).r;
-	//color = texture(framebuffer, TexCoords) + vec4(vec3(closestDepth/farPlane), 1.0);
+
+	//color = vec4(fragPos, 1);
+	//color = vec4(fragPos, 1);
 }

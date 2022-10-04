@@ -43,10 +43,10 @@ void Scene::init(const std::string& scenePath)
 	camera->FOV = 90.f;
 	//camera->setRenderTarget(&colorFramebuffer);
 
-	GameObject* lightObject = spawn(Transform(glm::vec3(0,2,0), glm::vec3(glm::radians(45.f), glm::radians(90.f), 0)));
+	GameObject* lightObject = spawn(Transform(glm::vec3(0,6,0), glm::vec3(glm::radians(45.f), glm::radians(90.f), 0)));
 	auto light = lightObject->createComponent<DirectLight>();
-	light->diffuse = glm::vec4(1, 1, 1, 1);
-	light->specular = glm::vec4(1, 1, 1, 1);
+	light->diffuse = glm::vec4(1, 1, 1, 0.8);
+	light->specular = glm::vec4(1, 1, 1, 0.8);
 	GameObject* lightMObject = spawn(Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0.1, 0.1, 1)), lightObject);
 	auto lightM = lightMObject->createComponent<StaticMeshComponent>();
 	lightM->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
@@ -56,16 +56,15 @@ void Scene::init(const std::string& scenePath)
 	floor->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
 
 	/*for (int i = -2; i <= 2; i += 4) {
-			GameObject* lightObject = spawn(Transform(glm::vec3(i, 4, 2)));
-			auto light = lightObject->createComponent<DirectLight>();
+			GameObject* lightObject = spawn(Transform(glm::vec3(i, 4, 1)));
+			auto light = lightObject->createComponent<PointLight>();
 
 			light->diffuse = glm::vec4(1,1,1,1);
 			light->specular = glm::vec4(1,1,1,1);
+			light->radius = 6;
 	}*/
 
-	
-
-	GameObject* obj = spawn(Transform(glm::vec3(-4, 0, 0)));
+	GameObject* obj = spawn(Transform(glm::vec3(0, 0, 0)));
 	auto mesh = obj->createComponent<StaticMeshComponent>();
 	mesh->mesh = Application::get().Loader().getAsset<Model>("egirl/egirl.obj");
 	//createBox(glm::vec3(1));

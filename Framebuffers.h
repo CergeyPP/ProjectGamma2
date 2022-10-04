@@ -18,6 +18,8 @@ public:
 	void bind();
 	void unbind();
 
+	void copy(Framebuffer& copyTarget, GLbitfield bitmask);
+
 	GLuint GL() {
 		return m_buffer;
 	}
@@ -44,7 +46,10 @@ public:
 	~Renderbuffer();
 
 	GLuint GL();
+
+	glm::vec2 size();
 private:
 
 	GLuint m_buffer;
+	glm::vec2 m_size;
 };

@@ -3,16 +3,11 @@
 #define POINT 1
 #define SPOT 2
 
-struct Light{
-	int type;
-	vec4 position;
-};
-
 uniform float farPlane;
 
 in vec4 FragPos;
 
-uniform Light light;
+uniform vec4 lightPos;
 
 out vec4 disperseDepth;
 
@@ -29,16 +24,12 @@ vec2 ComputeMoments(float Depth) {
 } 
 
 void main(){
-	if (light.type != DIRECTIONAL){
-		float lightDistance = length(FragPos.xyz - vec3(light.position));
-		lightDistance = lightDistance / farPlane;
+	float lightDistance = length(FragPos.xyz - vec3(lightPos));
+	lightDistance = lightDistance / farPlane;
 
-		vec2 moments = ComputeMoments(lightDistance);
+	vec2 moments = ComputeMoments(lightDistance);
 			//vec2(lightDistance, lightDistance * lightDistance);
-		gl_FragDepth = moments.x;
+	gl_FragDepth = moments.x;
 
-		disperseDepth = vec4(moments,0,0);
-	} else {		
-		gl_FragDepth = gl_FragCoord.z / farPlane;
-	}
+	disperseDepth = vec4(moments,0,0);
 }

@@ -22,10 +22,15 @@ private:
 
 	Framebuffer m_colorbuffer;
 	Texture m_resultTexture = Texture(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+	Renderbuffer m_colorRenderbuffer = Renderbuffer(Application::get().getWindowSize().x, Application::get().getWindowSize().y);
 
 	Framebuffer m_depthbuffer;
 	Texture m_depthTexture = Texture(GL_TEXTURE_2D, GL_RGBA32F, GL_RGBA, GL_FLOAT, glm::vec2(SHADOW_WIDTH, SHADOW_HEIGHT));
 	Renderbuffer m_depthRenderbuffer = Renderbuffer(SHADOW_WIDTH, SHADOW_HEIGHT);
+
+	Framebuffer m_depthbufferCube;
+	Texture m_depthTextureCube = Texture(GL_TEXTURE_CUBE_MAP, GL_RGBA32F, GL_RGBA, GL_FLOAT, glm::vec2(SHADOW_WIDTH, SHADOW_HEIGHT));
+	Renderbuffer m_depthRenderbufferCube = Renderbuffer(SHADOW_WIDTH, SHADOW_HEIGHT);
 
 	Framebuffer m_Gbuffer;
 	Texture m_posTexture = Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT);
@@ -42,6 +47,8 @@ private:
 		Loader().getAsset<Shader>("Old Shaders/Light.shader"),
 		Loader().getAsset<Shader>("Old Shaders/Light.shader"),
 	};
+
+	Mesh* m_pointLightSphere;
 
 	Shader* m_unionShader = Loader().getAsset<Shader>("UnionShader.txt");
 	Shader* m_postProcessShader = Loader().getAsset<Shader>("Screen.shader");

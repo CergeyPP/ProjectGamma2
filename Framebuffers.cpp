@@ -39,6 +39,18 @@ void Framebuffer::unbind()
     glDisable(GL_STENCIL_TEST);
 }
 
+void Framebuffer::copy(Framebuffer& copyTarget, GLbitfield bitmask)
+{
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, m_buffer);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, copyTarget.GL());
+    glBlitFramebuffer(0, 0, (int)m_bindTextures[0]->size().x, (int)m_bindTextures[0]->size().y,
+        0, 0, (int)copyTarget.m_bindTextures[0]->size().x, (int)copyTarget.m_bindTextures[0]->size().y,
+        bitmask,
+        GL_NEAREST);
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+    glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
 void Framebuffer::attachTexture(Texture* texture, GLenum attachmentType)
 {
     glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
@@ -87,6 +99,8 @@ Renderbuffer::Renderbuffer(int width, int height)
     glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
     //std::cout << glCheckError() << std::endl;
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+    m_size = glm::vec2(width, height);
 }
 
 Renderbuffer::~Renderbuffer()
@@ -97,4 +111,8 @@ Renderbuffer::~Renderbuffer()
 GLuint Renderbuffer::GL()
 {
     return m_buffer;
+}
+
+glm::vec2 Renderbuffer::size() {
+    return m_size;
 }

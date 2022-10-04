@@ -68,7 +68,8 @@ void Application::init()
 		std::cout << glewGetErrorString(GLEW_VERSION) << std::endl;
 	}
 
-	glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LEQUAL);
+	glEnable(GL_CULL_FACE);
 
 	//glEnable(GL_CULL_FACE);
 	//glCullFace(GL_FRONT);
