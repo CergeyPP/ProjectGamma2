@@ -8,3 +8,4 @@ Project Gamma 2!
 1. OpenGL/GLFW - отрисовка
 2. NVIDIA PhysX - физический движок
 3. STL C++17
+4. Assimp, SOIL - загрузка текстур и моделей
