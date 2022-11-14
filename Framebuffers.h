@@ -43,16 +43,6 @@ protected:
 	Renderbuffer* m_attachedRenderBuffer;
 };
 
-class FramebufferMultiSample : public Framebuffer {
-public:
-
-	FramebufferMultiSample(GLenum read = GL_FRONT, GLenum draw = GL_FRONT) : Framebuffer(read, draw) { }
-	~FramebufferMultiSample() override { }
-
-	void attachTexture(Texture* texture, GLenum attachmentType) override;
-
-};
-
 class Renderbuffer {
 public:
 

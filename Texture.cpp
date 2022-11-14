@@ -18,7 +18,6 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
     glBindTexture(m_target, m_texture);
     if (m_target == GL_TEXTURE_CUBE_MAP) {
         for (int i = 0; i < 6; i++) {
-            //glTexImage2DMultisample(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internationalformat, (int)size.x, (int)size.y, true);
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
         }
     }
@@ -34,7 +33,6 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
 
     glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    //glGenerateMipmap(m_target);
     glBindTexture(m_target, 0);
 }
 
@@ -64,7 +62,6 @@ void Texture::resize(glm::vec2 size) {
 
     glBindTexture(m_target, m_texture);
     glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
-    //glGenerateMipmap(m_target);
     glBindTexture(m_target, 0);
 }
 

@@ -1,6 +1,4 @@
 #version 450 core
-#define LINEAR 4.5
-#define QUADRATIC 200
 
 in vec4 screenPos;
 vec2 TexCoords;
@@ -76,8 +74,8 @@ vec3 calculatePointLight(Light pointLight, vec3 norm, vec3 FragPos, vec3 viewDir
 	vec4 spec = texture(specular, TexCoords);
 	float shininess = spec.a;
 
-	vec3 halfways = normalize(lightDir + viewDir);
-	float specularPower = pow(max(dot(norm, halfways), 0), shininess);
+	vec3 halfways = reflect(-lightDir, norm);
+	float specularPower = pow(max(dot(viewDir, halfways), 0), shininess);
 	vec3 specular = vec3(pointLight.specular) * specularPower * vec3(texture(specular, TexCoords)) * pointLight.specular.a;
 
 	return (diffuse + specular) * attenuation * clamp(pointLight.radius - distance, 0, 1);
@@ -130,7 +128,7 @@ void main(){
 
 	vec3 viewDir = normalize(viewPos - fragPos);
 
-	float shadow = max(light.isShadowCast, ShadowCalculation(fragPos));
+	float shadow = 1 - min(light.isShadowCast, ShadowCalculation(fragPos));
 
 	vec3 resultColor = calculatePointLight(light, norm, fragPos, viewDir) * shadow;
 	color = texture(framebuffer, TexCoords) + vec4(resultColor, 1.0);

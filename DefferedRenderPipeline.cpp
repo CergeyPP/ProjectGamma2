@@ -93,18 +93,6 @@ void DefferedRenderPipeline::drawFrom(CameraComponent* camera)
 
     //end of light
 
-    //m_colorbuffer.clear();
-    /*m_colorbuffer.bind();
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(m_posTexture.target(), m_posTexture.GL());
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(m_normalTexture.target(), m_normalTexture.GL());
-    glActiveTexture(GL_TEXTURE2);
-    glBindTexture(m_albedoTexture.target(), m_albedoTexture.GL());
-    glActiveTexture(GL_TEXTURE3);
-    glBindTexture(m_specularTexture.target(), m_specularTexture.GL());
-    extend::getCanvas().draw(m_unionShader);
-    m_colorbuffer.unbind();*/
 }
 
 
@@ -113,6 +101,11 @@ void DefferedRenderPipeline::showOnScreen()
     glClear(GL_COLOR_BUFFER_BIT);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(m_resultTexture.target(), m_resultTexture.GL());
+    //glBindTexture(m_posTexture.target(), m_posTexture.GL());
+    //glBindTexture(m_normalTexture.target(), m_normalTexture.GL());
+    //glBindTexture(m_albedoTexture.target(), m_albedoTexture.GL());
+    //glBindTexture(m_specularTexture.target(), m_specularTexture.GL());
+    //glBindTexture(m_shadowMap.target(), m_shadowMap.GL());
     extend::getCanvas().draw(m_postProcessShader);
 }
 
@@ -169,7 +162,7 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
     m_lightShader[0]->setUniform("light.position", glm::vec4(transform.position, 1));
     m_lightShader[0]->setUniform("light.direction", glm::vec4(transform.forward(), 1));
     m_lightShader[0]->setUniform("LightPV", projection * view);
-    m_lightShader[0]->setUniform("viewPos", viewPos);
+    m_lightShader[0]->setUniform("ViewPos", viewPos);
 
     glDisable(GL_DEPTH_TEST);
     glDepthMask(GL_FALSE);

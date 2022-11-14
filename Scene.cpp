@@ -38,7 +38,7 @@ Scene::~Scene()
 void Scene::init(const std::string& scenePath)
 {
 
-	GameObject* cameraObject = spawn(Transform(glm::vec3(-2, 4, 1)));
+	GameObject* cameraObject = spawn(Transform(glm::vec3(2, 4, 4), glm::vec3(glm::radians(45.f), glm::radians(210.f), 0)));
 	auto moveScript = cameraObject->createComponent<CameraMovingScript>();
 	auto camera = cameraObject->createComponent<CameraComponent>();
 	camera->FOV = 90.f;
@@ -46,8 +46,8 @@ void Scene::init(const std::string& scenePath)
 
 	GameObject* lightObject = spawn(Transform(glm::vec3(0,6,0), glm::vec3(glm::radians(45.f), glm::radians(210.f), 0)));
 	auto light = lightObject->createComponent<DirectLight>();
-	light->diffuse = glm::vec4(1, 1, 1, 0.4);
-	light->specular = glm::vec4(1, 1, 1, 0.4);
+	light->diffuse = glm::vec4(1, 1, 1, 0.7);
+	light->specular = glm::vec4(1, 1, 1, 0.7);
 	light->isShadowCast = 1;
 	GameObject* lightMObject; /*= spawn(Transform(glm::vec3(0), glm::vec3(0), glm::vec3(0.1, 0.1, 1)), lightObject);
 	auto lightM = lightMObject->createComponent<StaticMeshComponent>();
@@ -57,11 +57,11 @@ void Scene::init(const std::string& scenePath)
 	auto floor = floorObject->createComponent<StaticMeshComponent>();
 	floor->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
 
-	/*lightObject = spawn(Transform(glm::vec3(-2, 4, 1)));
+	lightObject = spawn(Transform(glm::vec3(-2, 4, 1)));
 	auto Plight = lightObject->createComponent<PointLight>();
 
-	Plight->diffuse = glm::vec4(1, 0, 0, 1);
-	Plight->specular = glm::vec4(1, 0, 0, 1);
+	Plight->diffuse = glm::vec4(0.2, 1, 0.2, 8);
+	Plight->specular = glm::vec4(0.2, 1, 0.2, 8);
 	Plight->radius = 6;
 
 	Plight->isShadowCast = 0;
@@ -69,20 +69,20 @@ void Scene::init(const std::string& scenePath)
 	lightObject = spawn(Transform(glm::vec3(2, 4, 1)));
 	Plight = lightObject->createComponent<PointLight>();
 
-	Plight->diffuse = glm::vec4(0, 1, 0, 1);
-	Plight->specular = glm::vec4(0, 1, 0, 1);
+	Plight->diffuse = glm::vec4(1, 0.2, 0.2, 12);
+	Plight->specular = glm::vec4(1, 0.2, 0.2, 12);
 	Plight->radius = 6;
 
-	Plight->isShadowCast = 0;*/
+	Plight->isShadowCast = 0;
 
-	for (int i = -1; i <= -1; i++) {
-		for (int j = -1; j <= -1; j++) {
+	for (int i = -2; i <= 2; i+=2) {
+		for (int j = -2; j <= 2; j+=2) {
 			GameObject* obj = spawn(Transform(glm::vec3(i, 0, j), glm::vec3(0), glm::vec3(1)));
 			auto mesh = obj->createComponent<StaticMeshComponent>();
 			mesh->mesh = Application::get().Loader().getAsset<Model>("egirl/egirl.obj");
 
 			auto rotator = obj->createComponent<RotateScript>();
-			rotator->rotateSpeed = 1;
+			rotator->rotateSpeed = 0.2 + (i - j) / 2;
 		}
 	}
 	

@@ -39,7 +39,7 @@ private:
 	Texture m_posTexture = Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT);
 	Texture m_normalTexture = Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT);
 	Texture m_albedoTexture = Texture(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
-	Texture m_specularTexture = Texture(GL_TEXTURE_2D, GL_RGBA, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture m_specularTexture = Texture(GL_TEXTURE_2D, GL_RGBA16F, GL_RGBA, GL_FLOAT);
 	Renderbuffer m_GRenderbuffer = Renderbuffer(Application::get().getWindowSize().x, Application::get().getWindowSize().y);
 
 	//Shader* m_simple;
@@ -56,7 +56,7 @@ private:
 	Shader* m_AAShadowShader = Loader().getAsset<Shader>("Old Shaders/AAShadow.shader");
 
 	Shader* m_unionShader = Loader().getAsset<Shader>("UnionShader.txt");
-	Shader* m_postProcessShader = Loader().getAsset<Shader>("Screen.shader");
+	Shader* m_postProcessShader = Loader().getAsset<Shader>("PostProcessShader.txt");
 };
 
 

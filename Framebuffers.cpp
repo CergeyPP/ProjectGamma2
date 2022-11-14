@@ -128,28 +128,6 @@ glm::vec2 Renderbuffer::size() {
     return m_size;
 }
 
-void FramebufferMultiSample::attachTexture(Texture* texture, GLenum attachmentType)
-{
-    glBindFramebuffer(GL_FRAMEBUFFER, m_buffer);
-    int i;
-    for (i = 0; i < m_bindTextures.size(); i++) {
-        if (m_attachmentType[i] == attachmentType) {
-            m_bindTextures.erase(m_bindTextures.begin() + i);
-            m_attachmentType.erase(m_attachmentType.begin() + i);
-            break;
-        }
-    }
-    m_bindTextures.push_back(texture);
-    m_attachmentType.push_back(attachmentType);
-
-    glBindTexture(texture->target(), texture->GL());
-    glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, texture->target(), texture->GL(), 0);
-    glDrawBuffers(m_attachmentType.size(), &(m_attachmentType[0]));
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-    glBindTexture(texture->target(), 0);
-}
-
 RenderbufferMultisample::RenderbufferMultisample(int width, int height) : Renderbuffer(width, height)
 {
     glDeleteRenderbuffers(1, &m_buffer);
