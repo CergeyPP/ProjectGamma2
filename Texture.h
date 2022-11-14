@@ -20,6 +20,9 @@ public:
 	void load(const std::string& filePath) override;
 	void generateTextureFromData(int width, int height, const unsigned char* data);
 
+	void setBorderColor(glm::vec4 color);
+	void setWrapMode(GLenum mode);
+
 	void genMipmaps();
 
 private:

@@ -180,6 +180,7 @@
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraMovingScript.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ComponentLocator.h" />
     <ClInclude Include="CreateCanvasMesh.h" />
     <ClInclude Include="DefferedRenderPipeline.h" />
     <ClInclude Include="Framebuffers.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="RenderPipeline.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RotateScript.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="StaticMeshComponent.h" />
@@ -215,6 +217,9 @@
     <None Include="Assets\LightDirectVertex.glsl" />
     <None Include="Assets\LightFragment.glsl" />
     <None Include="Assets\LightVertex.glsl" />
+    <None Include="Assets\Old Shaders\AAShadow.fs" />
+    <None Include="Assets\Old Shaders\AAShadow.shader" />
+    <None Include="Assets\Old Shaders\AAShadow.vs" />
     <None Include="Assets\Old Shaders\DepthDebug.glsl" />
     <None Include="Assets\Old Shaders\FragmentSimple.glsl" />
     <None Include="Assets\Old Shaders\Light.shader" />

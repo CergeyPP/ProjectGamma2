@@ -12,7 +12,7 @@ out vec3 FragPos;
 
 void main(){
 
-	Normal = mat3(transpose(inverse(Model))) * normal;
+	Normal = normalize(mat3(transpose(inverse(Model))) * normal);
 	TexCoords = texCoords;
 
 	FragPos = vec3(Model * vec4(position, 1));

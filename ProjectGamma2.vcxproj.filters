@@ -188,6 +188,12 @@
     <ClInclude Include="DefferedRenderPipeline.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="ComponentLocator.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="RotateScript.h">
+      <Filter>Файлы заголовков\User Scripts</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\config.cfg">
@@ -345,6 +351,15 @@
     </None>
     <None Include="Assets\Sphere\simpleSphere.fbx">
       <Filter>Файлы ресурсов\Assets\Sphere</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\AAShadow.vs">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\AAShadow.fs">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Old Shaders\AAShadow.shader">
+      <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

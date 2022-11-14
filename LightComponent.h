@@ -20,6 +20,8 @@ public:
     glm::vec4 diffuse;
     glm::vec4 specular;
 
+    bool isShadowCast = 0;
+
     virtual LightType getType() = 0;
     
 private:

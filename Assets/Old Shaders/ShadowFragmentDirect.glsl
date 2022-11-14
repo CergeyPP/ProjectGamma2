@@ -16,5 +16,5 @@ vec2 ComputeMoments(float Depth) {
 
 void main(){
 
-	depth = vec4(ComputeMoments(gl_FragCoord.z), gl_FragCoord.z, 0);
+	depth = vec4(ComputeMoments(gl_FragCoord.z), 0, 0);
 }

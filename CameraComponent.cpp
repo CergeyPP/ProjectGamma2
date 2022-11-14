@@ -10,7 +10,7 @@ CameraComponent::CameraComponent(GameObject* gameObject) : Component(gameObject)
     //m_unionShader = Loader().getAsset<Shader>("UnionShader.txt");
 
     FOV = 90.f;
-    m_frameAspect = 16.f / 9.f;
+    m_frameAspect = Application::get().getWindowSize().x / Application::get().getWindowSize().y;
     Application::get().scene().addCamera(this);
 
    /* m_posTexture =  new Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT, glm::vec2(Application::get().getWindowSize()));

@@ -106,9 +106,9 @@ void Application::start()
 		m_scene->update();
 
 		m_scene->draw();
-
 		glfwSwapBuffers(m_window);
 
+		std::cout << "Frametime: " << m_deltaTime * 1000 << std::endl;
 	}
 
 	clearResources();

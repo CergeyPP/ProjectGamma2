@@ -1,6 +1,8 @@
 #include "Texture.h"
 #include <SOIL/SOIL.h>
 
+#include "GLCheckError.h"
+
 #include <iostream>
 
 Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenum type, glm::vec2 size, bool multisampled)
@@ -21,16 +23,18 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
         }
     }
     else if (m_target == GL_TEXTURE_2D_MULTISAMPLE)
-        glTexImage2DMultisample(m_target, 4, m_format, (int)size.x, (int)size.y, GL_FALSE);
+        glTexStorage2DMultisample(m_target, 4, m_internationalformat, (int)size.x, (int)size.y, GL_TRUE);
     else
         glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
+
+    glCheckError();
 
     glTexParameteri(m_target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(m_target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     glTexParameteri(m_target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(m_target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glGenerateMipmap(m_target);
+    //glGenerateMipmap(m_target);
     glBindTexture(m_target, 0);
 }
 
@@ -60,6 +64,7 @@ void Texture::resize(glm::vec2 size) {
 
     glBindTexture(m_target, m_texture);
     glTexImage2D(m_target, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
+    //glGenerateMipmap(m_target);
     glBindTexture(m_target, 0);
 }
 
@@ -100,6 +105,21 @@ void Texture::generateTextureFromData(int width, int height, const unsigned char
 
     glTexImage2D(m_target, 0, m_internationalformat, width, height, 0, m_format, m_type, data);
     glGenerateMipmap(m_target);
+    glBindTexture(m_target, 0);
+}
+
+void Texture::setBorderColor(glm::vec4 color)
+{
+    glBindTexture(m_target, m_texture);
+    glTexParameterfv(m_target, GL_TEXTURE_BORDER_COLOR, &(color[0]));
+    glBindTexture(m_target, 0);
+}
+
+void Texture::setWrapMode(GLenum mode)
+{
+    glBindTexture(m_target, m_texture);
+    glTexParameteri(m_target, GL_TEXTURE_WRAP_S, mode);
+    glTexParameteri(m_target, GL_TEXTURE_WRAP_T, mode);
     glBindTexture(m_target, 0);
 }
 

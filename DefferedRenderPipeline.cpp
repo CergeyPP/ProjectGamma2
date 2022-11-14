@@ -6,6 +6,7 @@
 #include "Model.h"
 
 #include "CreateCanvasMesh.h"
+#include "GLCheckError.h"
 
 #include <glm/gtx/string_cast.hpp>
 
@@ -14,6 +15,8 @@ static glm::mat4 cameraTransform = glm::mat4(1);
 
 DefferedRenderPipeline::DefferedRenderPipeline()
 {
+    glEnable(GL_MULTISAMPLE);
+
     m_Gbuffer.attachTexture(&m_posTexture, GL_COLOR_ATTACHMENT0);
     m_Gbuffer.attachTexture(&m_normalTexture, GL_COLOR_ATTACHMENT1);
     m_Gbuffer.attachTexture(&m_albedoTexture, GL_COLOR_ATTACHMENT2);
@@ -27,9 +30,20 @@ DefferedRenderPipeline::DefferedRenderPipeline()
 
     m_depthbuffer.attachTexture(&m_depthTexture, GL_COLOR_ATTACHMENT0);
     m_depthbuffer.attachRenderbuffer(&m_depthRenderbuffer);
+    m_depthbuffer.setClearColor(glm::vec4(1));
+    m_depthTexture.setWrapMode(GL_CLAMP_TO_BORDER);
+    m_depthTexture.setBorderColor(glm::vec4(std::numeric_limits<float>::max()));
+
+    m_shadowbuffer.attachTexture(&m_shadowMap, GL_COLOR_ATTACHMENT0);
+    m_shadowbuffer.setClearColor(glm::vec4(1));
+    m_shadowMap.setWrapMode(GL_CLAMP_TO_BORDER);
+    m_shadowMap.setBorderColor(glm::vec4(std::numeric_limits<float>::max()));
 
     m_depthbufferCube.attachTexture(&m_depthTextureCube, GL_COLOR_ATTACHMENT0);
     m_depthbufferCube.attachRenderbuffer(&m_depthRenderbufferCube);
+    m_depthbufferCube.setClearColor(glm::vec4(1,1,0,1));
+    m_depthTextureCube.setWrapMode(GL_CLAMP_TO_BORDER);
+    m_depthTextureCube.setBorderColor(glm::vec4(std::numeric_limits<float>::max()));
 
     resize(Application::get().getWindowSize());
 
@@ -121,21 +135,32 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
     Transform transform = light->gameObject()->getGlobalTransform();
     glm::mat4 view = glm::lookAt(transform.position, transform.position + transform.forward(), glm::vec3(0, 1, 0));
 
-    m_depthbuffer.clear();
-    m_depthbuffer.bind();
-    for (auto mesh : m_drawables) {
-        mesh->drawCall(projection * view, m_shadowShader[0]);
-    }
-    m_depthbuffer.unbind();
-    m_depthTexture.genMipmaps();
 
+    if (light->isShadowCast) {
+        m_depthbuffer.clear();
+        m_depthbuffer.bind();
+        for (auto mesh : m_drawables) {
+            mesh->drawCall(projection * view, m_shadowShader[0]);
+        }
+        m_depthbuffer.unbind();
+
+        m_shadowbuffer.bind();
+
+        glDisable(GL_DEPTH_TEST);
+        m_AAShadowShader->setTexture("depthMap", m_depthTexture);
+        extend::getCanvas().draw(m_AAShadowShader);
+
+        m_shadowbuffer.unbind();
+
+        m_shadowMap.genMipmaps();
+    }
     m_colorbuffer.bind();
 
     m_lightShader[0]->setTexture("position", m_posTexture);
     m_lightShader[0]->setTexture("normal", m_normalTexture);
     m_lightShader[0]->setTexture("albedo", m_albedoTexture);
     m_lightShader[0]->setTexture("specular", m_specularTexture);
-    m_lightShader[0]->setTexture("depthMap", m_depthTexture);
+    m_lightShader[0]->setTexture("depthMap", m_shadowMap);
     m_lightShader[0]->setTexture("framebuffer", m_resultTexture);
 
     m_lightShader[0]->setUniform("farPlane", farplane);
@@ -147,7 +172,9 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
     m_lightShader[0]->setUniform("viewPos", viewPos);
 
     glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
     extend::getCanvas().draw(m_lightShader[0]);
+    glDepthMask(GL_TRUE);
     glEnable(GL_DEPTH_TEST);
     m_colorbuffer.unbind();
 }
@@ -155,36 +182,36 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
 void DefferedRenderPipeline::processLightPoint(PointLight* light, glm::vec3 viewPos)
 {
     //std::cout << "Process point light" << std::endl;
+    Transform lightTransform = light->gameObject()->getGlobalTransform();
+    float radiusMultiplier = 1.05;
+    lightTransform.scale = glm::vec3(light->radius * radiusMultiplier);
 
     m_depthbufferCube.clear();
-    m_depthbufferCube.bind();
+    if (light->isShadowCast) {
+        m_depthbufferCube.bind();
 
-    glm::vec3 pos = light->gameObject()->getGlobalTransform().position;
+        glm::mat4 projection = glm::perspective(90.f, 1.f, 1.0f, light->radius);
+        const glm::mat4 view[6] = {
+            glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(1,0,0), glm::vec3(0,-1,0)),
+            glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(-1,0,0), glm::vec3(0,-1,0)),
+            glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(0,1,0), glm::vec3(0,0,1)),
+            glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(0,-1,0), glm::vec3(0,0,-1)),
+            glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(0,0,1), glm::vec3(0,-1,0)),
+            glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(0,0,-1), glm::vec3(0,-1,0)),
+        };
 
-    glm::mat4 projection = glm::perspective(90.f, 1.f, 0.1f, light->radius);
-    const glm::mat4 view[6] = {
-        glm::lookAt(glm::vec3(pos), glm::vec3(pos) + glm::vec3(1,0,0), glm::vec3(0,-1,0)),
-        glm::lookAt(glm::vec3(pos), glm::vec3(pos) + glm::vec3(-1,0,0), glm::vec3(0,-1,0)),
-        glm::lookAt(glm::vec3(pos), glm::vec3(pos) + glm::vec3(0,1,0), glm::vec3(0,0,1)),
-        glm::lookAt(glm::vec3(pos), glm::vec3(pos) + glm::vec3(0,-1,0), glm::vec3(0,0,-1)),
-        glm::lookAt(glm::vec3(pos), glm::vec3(pos) + glm::vec3(0,0,1), glm::vec3(0,-1,0)),
-        glm::lookAt(glm::vec3(pos), glm::vec3(pos) + glm::vec3(0,0,-1), glm::vec3(0,-1,0)),
-    };
-
-    for (int i = 0; i < 6; i++) {
-        m_shadowShader[1]->setUniform("shadowMatrices[" + std::to_string(i) + "]", projection * view[i]);
+        for (int i = 0; i < 6; i++) {
+            m_shadowShader[1]->setUniform("shadowMatrices[" + std::to_string(i) + "]", projection * view[i]);
+        }
+        m_shadowShader[1]->setUniform("farPlane", light->radius);
+        m_shadowShader[1]->setUniform("lightPos", lightTransform.position);
+        for (auto mesh : m_drawables) {
+            mesh->drawCall(glm::mat4(1), m_shadowShader[1]);
+        }
+        m_depthbufferCube.unbind();
     }
-    m_shadowShader[1]->setUniform("farPlane", light->radius);
-    m_shadowShader[1]->setUniform("lightPos", pos);
-    for (auto mesh : m_drawables) {
-        mesh->drawCall(glm::mat4(1), m_shadowShader[1]);
-    }
-    m_depthbufferCube.unbind();
 
     m_colorbuffer.bind();
-
-    Transform lightTransform = light->gameObject()->getGlobalTransform();
-    lightTransform.scale = glm::vec3(light->radius);
 
     m_lightShader[1]->setTexture("position", m_posTexture);
     m_lightShader[1]->setTexture("normal", m_normalTexture);
@@ -198,14 +225,18 @@ void DefferedRenderPipeline::processLightPoint(PointLight* light, glm::vec3 view
     m_lightShader[1]->setUniform("light.specular", light->specular);
     m_lightShader[1]->setUniform("light.position", glm::vec4(lightTransform.position, 1.f));
     m_lightShader[1]->setUniform("viewPos", viewPos);
-    //std::cout << "LightMatrix : " << glm::to_string(lightTransform.matrix()) << std::endl;
+    m_lightShader[1]->setUniform("light.isShadowCast", int(light->isShadowCast));
 
-    //m_lightShader[1]->setUniform("Model", light->gameObject()->getGlobalTransform().matrix());
     glDisable(GL_DEPTH_TEST);
-    //m_colorbuffer.unbind();
     glCullFace(GL_FRONT);
-    m_pointLightSphere->draw(m_lightShader[1], cameraTransform, lightTransform);
+    m_pointLightSphere->draw(m_lightShader[1], cameraTransform, Transform(lightTransform.position, glm::vec3(0), lightTransform.scale));
     glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
+    //need to adaptize to use depth test
+
+    //glDepthMask(GL_FALSE);
+    //m_pointLightSphere->draw(m_lightShader[1], cameraTransform, lightTransform);
+    //glDepthMask(GL_TRUE);
 
     m_colorbuffer.unbind();
 }
