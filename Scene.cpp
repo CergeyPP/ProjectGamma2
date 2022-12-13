@@ -57,14 +57,19 @@ void Scene::init(const std::string& scenePath)
 	auto floor = floorObject->createComponent<StaticMeshComponent>();
 	floor->mesh = Loader().getAsset<Model>("Cube/simpleCube.fbx");
 
-	lightObject = spawn(Transform(glm::vec3(-2, 4, 1)));
-	auto Plight = lightObject->createComponent<PointLight>();
+	GameObject* lightMObject;
 
 	Plight->diffuse = glm::vec4(0.2, 1, 0.2, 8);
 	Plight->specular = glm::vec4(0.2, 1, 0.2, 8);
 	Plight->radius = 6;
 
-	Plight->isShadowCast = 0;
+	Plight->isShadowCast = 1;
+
+	auto Pmesh = lightMObject->createComponent<StaticMeshComponent>();
+	auto board = Loader().getAsset<Billboard>("spec.png");
+	Pmesh->mesh = board;
+	board->size = glm::vec2(0.2, 0.2);
+	Pmesh->isOpaque = 0;
 
 	lightObject = spawn(Transform(glm::vec3(2, 4, 1)));
 	Plight = lightObject->createComponent<PointLight>();
@@ -144,14 +149,6 @@ void Scene::kill(GameObject* object)
 			m_deadObjects.push_back(*it);
 			m_instancedObjects.erase(it);
 		}
-	}
-}
-
-void Scene::addCamera(CameraComponent* camera)
-{
-	auto it = std::find(m_cameras.cbegin(), m_cameras.cend(), camera);
-	if (it == m_cameras.end()) {
-		m_cameras.push_back(camera);
 	}
 }
 
