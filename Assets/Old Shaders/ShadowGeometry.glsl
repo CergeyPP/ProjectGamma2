@@ -9,7 +9,7 @@ out vec4 FragPos;
 
 void main()
 {
-    for(int face = 0; face < 6; ++face)
+    for(int face = 0; face < 6; face++)
     {
         // встроенная переменная, определяющая в какую 
         // грань кубической карты идет рендер

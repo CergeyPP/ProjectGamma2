@@ -26,25 +26,22 @@ uniform vec3 viewPos;
 
 out vec4 color;
 
-float linstep(float min, float max, float value){
-	return clamp((value - min)/(max - min), 0, 1);
-}
-
  float ChebyshevUpperBound(vec2 Moments, float t) {   
-	float p = step(t, Moments.x);   // Compute variance.    
+	float p = step(t, Moments.x);       
 	float Variance = Moments.y - (Moments.x * Moments.x);  
-	// Compute probabilistic upper bound.    
-	Variance = max(Variance, 0.000005);
+	   
+	Variance = max(Variance, 0.002);
 	float d = t - Moments.x;
-	float p_max = linstep(0.2, 1, Variance / (Variance + d*d));
+	float p_max = smoothstep(0, 1, Variance / (Variance + d*d));
 	return min(max(p, p_max), 1.0);
 }
 
 
 float ShadowContribution(vec3 texCoords, float Distance){
-	 vec2 Moments = texture(depthMap, texCoords).rg;
+	 vec2 Moments = texture(depthMap, texCoords, 0).rg;
 
 	return ChebyshevUpperBound(Moments, Distance);
+	//return Moments.x;
 }
 
 float ShadowCalculation(vec3 fragPos){
@@ -52,10 +49,30 @@ float ShadowCalculation(vec3 fragPos){
 	vec3 fragToLight = fragPos - vec3(light.position);
 	float currentDepth = length(fragToLight);
 
-	float closestDepth = ShadowContribution(normalize(fragToLight), currentDepth);
+	float closestDepth = ShadowContribution(fragToLight, currentDepth);
 
 	return closestDepth;
 }
+
+float ShadowCalculationPCF(vec3 fragPos)
+{
+    // расчет вектора между положением фрагмента и положением источника света
+    vec3 fragToLight = fragPos - vec3(light.position);
+    // полученный вектор направления от источника к фрагменту 
+    // используется для выборки из кубической карты глубин
+    float closestDepth = texture(depthMap, fragToLight).r;
+    // получено линейное значение глубины в диапазоне [0,1]
+    // проведем обратную трансформацию в исходный диапазон
+    
+    // получим линейное значение глубины для текущего фрагмента 
+    // как расстояние от фрагмента до источника света
+    float currentDepth = length(fragToLight);
+    // тест затенения
+    float bias = 0.05; 
+    float shadow = currentDepth -  bias > closestDepth ? 1.0 : 0.0;
+
+    return 1-shadow;
+} 
 
 vec3 calculatePointLight(Light pointLight, vec3 norm, vec3 FragPos, vec3 viewDir){
 
@@ -119,8 +136,10 @@ vec3 calculatePointLight(Light pointLight, vec3 norm, vec3 FragPos, vec3 viewDir
 
 void main(){
 
+
 	vec3 screenCoords = screenPos.xyz / screenPos.w;
 	TexCoords = vec2(screenCoords * 0.5 + 0.5);
+	//TexCoords = vec2(screenPos);
 
 	vec3 norm = vec3(texture(normal, TexCoords));
 
@@ -128,8 +147,11 @@ void main(){
 
 	vec3 viewDir = normalize(viewPos - fragPos);
 
-	float shadow = 1 - min(light.isShadowCast, ShadowCalculation(fragPos));
+	float shadow = max(1 - light.isShadowCast, ShadowCalculation(fragPos));
 
 	vec3 resultColor = calculatePointLight(light, norm, fragPos, viewDir) * shadow;
 	color = texture(framebuffer, TexCoords) + vec4(resultColor, 1.0);
+	//color = vec4(shadow, 0, 0, 1.f);
+	//color = vec4(fragPos - vec3(light.position), 1.f);
+	//color = vec4(norm, 1.f);
 }

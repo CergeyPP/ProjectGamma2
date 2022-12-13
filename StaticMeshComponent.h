@@ -11,6 +11,7 @@ public:
 	~StaticMeshComponent() override;
 
 	IDrawable* mesh;
+	bool isOpaque = 1;
 
 	void drawCall(const glm::mat4& ProjectionView, Shader* shader = nullptr);
 

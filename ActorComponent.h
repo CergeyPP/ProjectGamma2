@@ -10,6 +10,7 @@ class ActorComponent :
 protected:
 
     ActorComponent(GameObject* parent);
+    ActorComponent(const ActorComponent& other);
 
     virtual void onEnable() {}
     virtual void onDisable() {}
@@ -30,6 +31,8 @@ private:
         beginPlay();
         Application::get().scene().beginPlayEvent -= MY_METHOD_HANDLER(ActorComponent::onbeginPlay);
     }
+    void onTick();
+    void onPreRender();
 
     void DisableEvent() override final;
     void EnableEvent() override final;

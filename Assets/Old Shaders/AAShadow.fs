@@ -30,7 +30,7 @@ float blurDivide = 16;
 
 vec2 blurColor(){
 	const float constStep = 1.f / 600.f;
-	vec2 offsetStep = vec2(textureSize(depthMap)) * constStep;
+	vec2 offsetStep = 1 / vec2(textureSize(depthMap));
 	ivec2 depthMapCoords = ivec2(vec2(textureSize(depthMap)) * TexCoords);
 
 	vec2 blurDepth = vec2(0, 0);

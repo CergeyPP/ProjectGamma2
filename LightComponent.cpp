@@ -17,10 +17,10 @@ LightComponent::~LightComponent()
 
 void LightComponent::DisableEvent()
 {
-	Application::get().getPipeline().deleteLight(this);
+	
 }
 
 void LightComponent::EnableEvent()
 {
-	Application::get().getPipeline().addLight(this);
+	
 }

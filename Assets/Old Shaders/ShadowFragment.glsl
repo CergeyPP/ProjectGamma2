@@ -7,7 +7,7 @@ uniform float farPlane;
 
 in vec4 FragPos;
 
-uniform vec4 lightPos;
+uniform vec3 lightPos;
 
 out vec4 disperseDepth;
 
@@ -24,12 +24,11 @@ vec2 ComputeMoments(float Depth) {
 } 
 
 void main(){
-	float lightDistance = length(FragPos.xyz - vec3(lightPos));
-	lightDistance = lightDistance / farPlane;
+	float lightDistance = length(FragPos - vec4(lightPos, 1.f));
 
 	vec2 moments = ComputeMoments(lightDistance);
 			//vec2(lightDistance, lightDistance * lightDistance);
 	gl_FragDepth = moments.x;
 
-	disperseDepth = vec4(moments,0,0);
+	disperseDepth = vec4(moments, 0, 0);
 }

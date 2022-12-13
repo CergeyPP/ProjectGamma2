@@ -151,6 +151,7 @@
   <ItemGroup>
     <ClCompile Include="ActorComponent.cpp" />
     <ClCompile Include="Asset.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="CameraComponent.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="CreateCanvasMesh.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Mesh.cpp" />
     <ClCompile Include="Model.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="RenderPipeline.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -177,6 +179,7 @@
     <ClInclude Include="ActorComponent.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Asset.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="CameraComponent.h" />
     <ClInclude Include="CameraMovingScript.h" />
     <ClInclude Include="Component.h" />
@@ -192,6 +195,7 @@
     <ClInclude Include="Material.h" />
     <ClInclude Include="Mesh.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="RenderPipeline.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="RotateScript.h" />
@@ -203,6 +207,9 @@
     <ClInclude Include="Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Assets\Billboard.fs" />
+    <None Include="Assets\Billboard.shader" />
+    <None Include="Assets\Billboard.vs" />
     <None Include="Assets\config.cfg" />
     <None Include="Assets\Cube\simpleCube.fbx" />
     <None Include="Assets\DefaultFragment.glsl" />
@@ -235,6 +242,9 @@
     <None Include="Assets\Old Shaders\ShadowGeometry.glsl" />
     <None Include="Assets\Old Shaders\ShadowVertex.glsl" />
     <None Include="Assets\Old Shaders\ShadowVertexDirect.glsl" />
+    <None Include="Assets\particle.fs" />
+    <None Include="Assets\particle.shader" />
+    <None Include="Assets\particle.vs" />
     <None Include="Assets\PostProcessFragment.glsl" />
     <None Include="Assets\PostProcessVertex.glsl" />
     <None Include="Assets\Screen.shader" />

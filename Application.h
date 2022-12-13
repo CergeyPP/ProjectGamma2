@@ -4,9 +4,11 @@
 #include <glm/glm.hpp>
 
 #include "Asset.h"
-#include "Scene.h"
 #include "RenderPipeline.h"
 
+#include "ComponentLocator.h"
+
+class Scene;
 
 class Application
 {
@@ -37,6 +39,13 @@ public:
 		return *m_pipeline;
 	}
 
+	ComponentServiceLocator& getServiceLocator() {
+		return m_locator;
+	}
+
+	CameraComponent* getRenderCamera() {
+		return m_pipeline->getRenderCamera();
+	}
 
 private:
 
@@ -64,7 +73,11 @@ private:
 	static void CloseCallback(GLFWwindow* window);
 
 	RenderPipeline* m_pipeline;
+
+	ComponentServiceLocator m_locator;
 };
 
 AssetLoader& Loader();
 Scene& MainScene();
+
+#include "Scene.h"

@@ -11,7 +11,6 @@ CameraComponent::CameraComponent(GameObject* gameObject) : Component(gameObject)
 
     FOV = 90.f;
     m_frameAspect = Application::get().getWindowSize().x / Application::get().getWindowSize().y;
-    Application::get().scene().addCamera(this);
 
    /* m_posTexture =  new Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT, glm::vec2(Application::get().getWindowSize()));
     m_normalTexture = new Texture(GL_TEXTURE_2D, GL_RGB16F, GL_RGBA, GL_FLOAT, glm::vec2(Application::get().getWindowSize()));
@@ -37,7 +36,6 @@ CameraComponent::CameraComponent(GameObject* gameObject) : Component(gameObject)
 
 CameraComponent::~CameraComponent()
 {
-    Application::get().scene().deleteCamera(this);
 
     /*delete m_normalTexture;
     delete m_posTexture;
@@ -62,6 +60,27 @@ glm::mat4 CameraComponent::getProjectionViewMatrix()
         glm::vec3(0, 1, 0));
 
     return proj * view;
+}
+
+glm::mat4 CameraComponent::getProjectionMatrix()
+{
+    glm::mat4 proj = glm::perspective(FOV / 2.f, m_frameAspect, 0.1f, 100.f);
+    return proj;
+}
+
+glm::mat4 CameraComponent::getViewMatrix()
+{
+    glm::mat4 view = glm::lookAt(gameObject()->getGlobalTransform().position,
+        gameObject()->getGlobalTransform().position + gameObject()->getGlobalTransform().forward(),
+        glm::vec3(0, 1, 0));
+
+    return view;
+}
+
+glm::mat4 CameraComponent::getParticleProjectionMatrix()
+{
+    glm::mat4 proj = glm::perspective(FOV / 2.f, m_frameAspect, 1.f, 100.f);
+    return proj;
 }
 
 void CameraComponent::render() {

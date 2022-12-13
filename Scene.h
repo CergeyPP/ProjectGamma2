@@ -1,11 +1,14 @@
 #pragma once
 #include "Shader.h"
-#include "GameObject.h"
 #include "TEvent.h"
 #include "Mesh.h"
-#include "CameraComponent.h"
 
 #include <vector>
+
+#include "CameraComponent.h"
+#include "ComponentLocator.h"
+
+
 
 class Scene
 {
@@ -32,12 +35,9 @@ public:
 	GameObject* spawn(const Transform& transform = Transform(), GameObject* parent = nullptr);
 	void kill(GameObject* object);
 
-	void addCamera(CameraComponent* camera);
-	void deleteCamera(CameraComponent* camera);
-
 private:
 
-	std::vector<CameraComponent*> m_cameras;
+	ComponentService<CameraComponent> m_cameras;
 
 	std::vector<GameObject*> m_instancedObjects;
 	std::vector<GameObject*> m_objects;
@@ -45,4 +45,3 @@ private:
 
 	Shader* m_screenShader;
 };
-

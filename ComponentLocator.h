@@ -1,5 +1,6 @@
 #pragma once
 #include <map>
+#include <functional>
 #include "Component.h"
 #include "StaticMeshComponent.h"
 
@@ -11,13 +12,31 @@ template<class TComp>
 class ComponentService : public IService{
 public:
 
-	TComp* create(GameObject* parent) {
-		m_components.push_back(TComp(parent));
+	
+	template< class ...TParams>
+	TComp* create(TParams... params) {
+		m_components.emplace_back(TComp(params...));
 		return &m_components[m_components.size() - 1];
 	}
 
-	void destroy(TComp* component) {
-		
+	bool destroy(TComp* component) {
+		auto it = std::find(m_components.cbegin(), m_components.cend(), &component);
+		if (it != m_components.end()) {
+			m_components.erase(it);
+			return true;
+		}
+		return false;
+	}
+
+	TComp* getByIndex(size_t index) {
+		if (index >= m_components.size()) return nullptr;
+		return &m_components[index];
+	}
+
+	void foreach(std::function<void(TComp&)> func) {
+		for (auto& elem : m_components) {
+			func(elem);
+		}
 	}
 
 
@@ -31,17 +50,24 @@ public:
 
 	template<class TComp>
 	void registerLocator(ComponentService<TComp>* locator) {
-		m_locators[typeid(TComp).hash_code()] = locator;
+		m_locators[typeid(TComp).name()] = locator;
+	}
+
+	template<class TComp>
+	void deleteLocator(ComponentService<TComp>* locator) {
+		m_locators[typeid(TComp).name()] = nullptr;
 	}
 
 	template<class TComp>
 	ComponentService<TComp>* getLocator() {
-		if (m_locators.find(typeid(TComp).hash_code()) != m_locators.end())
-			return (ComponentService<TComp>*)m_locators[typeid(TComp).hash_code()];
+		if (m_locators.find(typeid(TComp).name()) != m_locators.end())
+			return (ComponentService<TComp>*)m_locators[typeid(TComp).name()];
 		else return nullptr;
 	}
 
+
+
 private:
 
-	std::map<size_t, IService*> m_locators;
+	std::map<const char*, IService*> m_locators;
 };

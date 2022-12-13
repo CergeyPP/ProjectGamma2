@@ -1,3 +1,3 @@
 ShadowVertex.glsl
 ShadowFragment.glsl
-Shadowgeometry.glsl
+ShadowGeometry.glsl

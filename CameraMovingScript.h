@@ -1,6 +1,7 @@
 #pragma once
 #include "ActorComponent.h"
 #include "Application.h"
+#include "ParticleSystem.h"
 
 #include "InputMap.h"
 #include <iostream>
@@ -20,8 +21,11 @@ public:
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Look"]->event -= MY_METHOD_HANDLER(CameraMovingScript::look);
 	}
 
+	ParticleSystem* particles;
+
 private:
 
+	bool particleIsActive;
 	float m_speed = 0;
 
 	float m_pitch = 0;
@@ -32,6 +36,8 @@ private:
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Jump"]->event += MY_METHOD_HANDLER(CameraMovingScript::jump);
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Move"]->event += MY_METHOD_HANDLER(CameraMovingScript::move);
 		Loader().getAsset<InputMap>("InputMap.txt")->actionMap["Look"]->event += MY_METHOD_HANDLER(CameraMovingScript::look);
+		if (particles != nullptr)
+			particleIsActive = particles->isActive();
 	}
 
 	void update() override {
@@ -66,6 +72,9 @@ private:
 
 	void jump(const InputValue& value) {
 		std::cout << "Jump action!" << std::endl;
-		
+		if (particles != nullptr) {
+			particleIsActive = !particleIsActive;
+			particles->setActive(particleIsActive);
+		}
 	}
 };

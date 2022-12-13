@@ -22,6 +22,7 @@ public:
 
 	void setBorderColor(glm::vec4 color);
 	void setWrapMode(GLenum mode);
+	size_t getLayerCount();
 
 	void genMipmaps();
 
@@ -33,5 +34,6 @@ private:
 	GLuint m_texture;
 	GLenum m_format;
 	GLenum m_internationalformat;
+	size_t m_layers;
 };
 

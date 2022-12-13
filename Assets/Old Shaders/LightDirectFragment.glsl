@@ -18,6 +18,7 @@ struct Light{
 	vec4 specular;	
 	vec4 position;
 	vec4 direction;
+	int isShadowCast;
 };
 
 uniform float farPlane;
@@ -80,7 +81,7 @@ void main(){
 
 	vec3 viewDir = normalize(ViewPos - fragPos);
 
-	float shadow = ShadowCalculation(fragPos);
+	float shadow = max(1 - light.isShadowCast, ShadowCalculation(fragPos));
 
 	vec3 resultColor = calculateDirectionLight(light, norm, fragPos, viewDir) * shadow;
 

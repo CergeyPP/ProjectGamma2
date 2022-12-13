@@ -4,6 +4,8 @@
 #include "Transform.h"
 #include "Component.h"
 
+#include "ComponentLocator.h"
+
 class GameObject
 {
 public:
@@ -40,12 +42,22 @@ public:
 			return nullptr;
 		return (*it);
 	}
+
 	template<class TComp, class ...TParams>
 	TComp* createComponent(TParams... constructParams) {
-		TComp* component = new TComp(this, constructParams...);
-		m_components.push_back(component);
-		return component;
+
+		auto componentService = getComponentLocator().getLocator<TComp>();
+		if (componentService == nullptr) {
+			TComp* component = new TComp(this, constructParams...);
+			m_components.push_back(component);
+			return component;
+		}
+		else {
+			return componentService->create(this, constructParams...);
+		}
+
 	}
+
 	void deleteComponent(Component* component) {
 		auto it = std::find_if(m_components.cbegin(), m_components.cend(), [&component](const Component* comp) {
 			return (comp == component);
@@ -60,10 +72,11 @@ public:
 
 private:
 
+	ComponentServiceLocator& getComponentLocator();
+
 	Transform m_transform;
 	GameObject* m_parent;
 	std::vector<GameObject*> m_children;
 
 	std::vector<Component*> m_components;
 };
-

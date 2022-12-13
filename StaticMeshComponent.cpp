@@ -15,16 +15,17 @@ StaticMeshComponent::~StaticMeshComponent()
 
 void StaticMeshComponent::drawCall(const glm::mat4& ProjectionView, Shader* shader)
 {
+	if (isActive() == false) return;
 	if (mesh == nullptr) return;
 	mesh->draw(shader, ProjectionView, gameObject()->getGlobalTransform());
 }
 
 void StaticMeshComponent::DisableEvent()
 {
-	Application::get().getPipeline().deleteDrawable(this);
+	
 }
 
 void StaticMeshComponent::EnableEvent()
 {
-	Application::get().getPipeline().addDrawable(this);
+	
 }

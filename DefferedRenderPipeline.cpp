@@ -15,7 +15,10 @@ static glm::mat4 cameraTransform = glm::mat4(1);
 
 DefferedRenderPipeline::DefferedRenderPipeline()
 {
+    m_renderCamera = nullptr;
     glEnable(GL_MULTISAMPLE);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0, 0, 0, 1);
 
     m_Gbuffer.attachTexture(&m_posTexture, GL_COLOR_ATTACHMENT0);
     m_Gbuffer.attachTexture(&m_normalTexture, GL_COLOR_ATTACHMENT1);
@@ -30,9 +33,9 @@ DefferedRenderPipeline::DefferedRenderPipeline()
 
     m_depthbuffer.attachTexture(&m_depthTexture, GL_COLOR_ATTACHMENT0);
     m_depthbuffer.attachRenderbuffer(&m_depthRenderbuffer);
-    m_depthbuffer.setClearColor(glm::vec4(1));
+    m_depthbuffer.setClearColor(glm::vec4(0, std::numeric_limits<float>::max(), 0, 0));
     m_depthTexture.setWrapMode(GL_CLAMP_TO_BORDER);
-    m_depthTexture.setBorderColor(glm::vec4(std::numeric_limits<float>::max()));
+    m_depthTexture.setBorderColor(glm::vec4(0, std::numeric_limits<float>::max(), 0, 0));
 
     m_shadowbuffer.attachTexture(&m_shadowMap, GL_COLOR_ATTACHMENT0);
     m_shadowbuffer.setClearColor(glm::vec4(1));
@@ -55,6 +58,13 @@ DefferedRenderPipeline::DefferedRenderPipeline()
     m_shadowShader[2] = Loader().getAsset<Shader>("Old Shaders/Shadow.shader");
 
     m_pointLightSphere = Loader().getAsset<Model>("Sphere/simpleSphere.fbx")->getMesh(0);
+
+    auto& locator = Application::get().getServiceLocator();
+    locator.registerLocator(&m_staticMeshes);
+    locator.registerLocator(&m_directLights);
+    locator.registerLocator(&m_pointLights);
+    locator.registerLocator(&m_spotLights);
+    locator.registerLocator(&m_particleSystems);
 }
 
 DefferedRenderPipeline::~DefferedRenderPipeline()
@@ -63,12 +73,18 @@ DefferedRenderPipeline::~DefferedRenderPipeline()
 
 void DefferedRenderPipeline::drawFrom(CameraComponent* camera)
 {
+    m_renderCamera = camera;
     glm::mat4 pv = camera->getProjectionViewMatrix();
+
+    glDisable(GL_BLEND);
     m_Gbuffer.clear();
     m_Gbuffer.bind();
-    for (auto mesh : m_drawables) {
-        mesh->drawCall(pv);
-    }
+
+    m_staticMeshes.foreach([&pv](StaticMeshComponent& mesh) {
+        if (mesh.isOpaque)
+            mesh.drawCall(pv);
+        });
+
     m_Gbuffer.unbind();
 
     cameraTransform = pv;
@@ -77,22 +93,40 @@ void DefferedRenderPipeline::drawFrom(CameraComponent* camera)
     m_colorbuffer.clear();
     m_Gbuffer.copy(m_colorbuffer, GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-    for (auto light : m_lights) {
-        switch (light->getType()) {
-        case LightType::DIRECTIONAL:
-            processLightDirect((DirectLight*)light, camera->gameObject()->getGlobalTransform().position);
-            break;
-        case LightType::POINT:
-            processLightPoint((PointLight*)light, camera->gameObject()->getGlobalTransform().position);
-            break;
-        case LightType::SPOT:
-            processLightSpot((SpotLight*)light, camera->gameObject()->getGlobalTransform().position);
-            break;
-        }
-    }
+    glm::vec3 cameraPos = camera->gameObject()->getGlobalTransform().position;
+
+    m_directLights.foreach([this, cameraPos](DirectLight& light) {
+        processLightDirect(&light, cameraPos);
+        });
+
+    m_pointLights.foreach([this, cameraPos](PointLight& light) {
+        processLightPoint(&light, cameraPos);
+        });
+
+    m_spotLights.foreach([this, cameraPos](SpotLight& light) {
+        processLightSpot(&light, cameraPos);
+        });
+
 
     //end of light
+   
+    //draw transparent objects
+    glEnable(GL_BLEND);
+    m_colorbuffer.bind();
+    glDepthMask(GL_FALSE);
 
+    m_staticMeshes.foreach([&pv](StaticMeshComponent& mesh) {
+        if (!mesh.isOpaque)
+            mesh.drawCall(pv);
+        });
+    glm::mat4 particlePV = camera->getParticleProjectionMatrix() * camera->getViewMatrix();
+    m_particleSystems.foreach([&particlePV](ParticleSystem& particle) {
+        particle.draw(particlePV);
+        });
+
+    glDepthMask(GL_TRUE);
+    m_colorbuffer.unbind();
+   
 }
 
 
@@ -119,8 +153,14 @@ void DefferedRenderPipeline::resize(glm::vec2 windowSize)
     m_resultTexture.resize(windowSize);
 }
 
+CameraComponent* DefferedRenderPipeline::getRenderCamera()
+{
+    return m_renderCamera;
+}
+
 void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 viewPos)
 {
+    if (light->isActive() == false) return;
     float farplane = 25.f;
 
     //std::cout << "Process direct light" << std::endl;
@@ -128,18 +168,21 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
     Transform transform = light->gameObject()->getGlobalTransform();
     glm::mat4 view = glm::lookAt(transform.position, transform.position + transform.forward(), glm::vec3(0, 1, 0));
 
-
     if (light->isShadowCast) {
         m_depthbuffer.clear();
         m_depthbuffer.bind();
-        for (auto mesh : m_drawables) {
-            mesh->drawCall(projection * view, m_shadowShader[0]);
-        }
+
+        m_staticMeshes.foreach([&projection, &view, this](StaticMeshComponent& mesh) {
+            if (mesh.isOpaque)
+                mesh.drawCall(projection * view, m_shadowShader[0]);
+            });
+
         m_depthbuffer.unbind();
 
         m_shadowbuffer.bind();
 
         glDisable(GL_DEPTH_TEST);
+
         m_AAShadowShader->setTexture("depthMap", m_depthTexture);
         extend::getCanvas().draw(m_AAShadowShader);
 
@@ -161,6 +204,7 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
     m_lightShader[0]->setUniform("light.specular", light->specular);
     m_lightShader[0]->setUniform("light.position", glm::vec4(transform.position, 1));
     m_lightShader[0]->setUniform("light.direction", glm::vec4(transform.forward(), 1));
+    m_lightShader[0]->setUniform("light.isShadowCast", light->isShadowCast);
     m_lightShader[0]->setUniform("LightPV", projection * view);
     m_lightShader[0]->setUniform("ViewPos", viewPos);
 
@@ -174,16 +218,17 @@ void DefferedRenderPipeline::processLightDirect(DirectLight* light, glm::vec3 vi
 
 void DefferedRenderPipeline::processLightPoint(PointLight* light, glm::vec3 viewPos)
 {
+    if (light->isActive() == false) return;
     //std::cout << "Process point light" << std::endl;
     Transform lightTransform = light->gameObject()->getGlobalTransform();
-    float radiusMultiplier = 1.05;
-    lightTransform.scale = glm::vec3(light->radius * radiusMultiplier);
+    lightTransform.scale = glm::vec3(light->radius * 1.05);
 
-    m_depthbufferCube.clear();
+    
     if (light->isShadowCast) {
+        m_depthbufferCube.clear();
         m_depthbufferCube.bind();
 
-        glm::mat4 projection = glm::perspective(90.f, 1.f, 1.0f, light->radius);
+        glm::mat4 projection = glm::perspective(glm::radians(90.f), 1.f, 0.5f, light->radius);
         const glm::mat4 view[6] = {
             glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(1,0,0), glm::vec3(0,-1,0)),
             glm::lookAt(glm::vec3(lightTransform.position), glm::vec3(lightTransform.position) + glm::vec3(-1,0,0), glm::vec3(0,-1,0)),
@@ -198,9 +243,13 @@ void DefferedRenderPipeline::processLightPoint(PointLight* light, glm::vec3 view
         }
         m_shadowShader[1]->setUniform("farPlane", light->radius);
         m_shadowShader[1]->setUniform("lightPos", lightTransform.position);
-        for (auto mesh : m_drawables) {
-            mesh->drawCall(glm::mat4(1), m_shadowShader[1]);
-        }
+
+        m_staticMeshes.foreach([this](StaticMeshComponent& mesh) {
+            if (mesh.isOpaque)
+                mesh.drawCall(glm::mat4(1), m_shadowShader[1]);
+            });
+
+
         m_depthbufferCube.unbind();
     }
 
@@ -222,7 +271,7 @@ void DefferedRenderPipeline::processLightPoint(PointLight* light, glm::vec3 view
 
     glDisable(GL_DEPTH_TEST);
     glCullFace(GL_FRONT);
-    m_pointLightSphere->draw(m_lightShader[1], cameraTransform, Transform(lightTransform.position, glm::vec3(0), lightTransform.scale));
+    m_pointLightSphere->draw(m_lightShader[1], cameraTransform, lightTransform);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
     //need to adaptize to use depth test
@@ -236,5 +285,6 @@ void DefferedRenderPipeline::processLightPoint(PointLight* light, glm::vec3 view
 
 void DefferedRenderPipeline::processLightSpot(SpotLight* light, glm::vec3 viewPos)
 {
+    if (light->isActive() == false) return;
     std::cout << "Process spot light" << std::endl;
 }

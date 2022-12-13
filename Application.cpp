@@ -90,6 +90,7 @@ void Application::init()
 void Application::start()
 {
 	float currentTime = 0;
+	float frametime = 0;
 	glfwSetTime(0);
 
 	while (!glfwWindowShouldClose(m_window)) {
@@ -101,14 +102,19 @@ void Application::start()
 		m_deltaTime = deltaTime;
 		m_time = currentTime;
 
+		frametime += m_deltaTime;
+
 		glfwPollEvents();
 
 		m_scene->update();
 
-		m_scene->draw();
-		glfwSwapBuffers(m_window);
+		if (frametime * 1000.f > 0.0f) {
+			m_scene->draw();
+			glfwSwapBuffers(m_window);
+			//std::cout << "Frametime: " << frametime * 1000 << std::endl;
+			frametime = 0;
+		}
 
-		std::cout << "Frametime: " << m_deltaTime * 1000 << std::endl;
 	}
 
 	clearResources();

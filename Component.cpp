@@ -20,8 +20,8 @@ void Component::setActive(bool active)
     if (m_isActive == active) return;
     m_isActive = active;
     if (active)
-        DisableEvent();
-    else EnableEvent();
+        EnableEvent();
+    else DisableEvent();
 }
 
 bool Component::isActive()

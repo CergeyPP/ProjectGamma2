@@ -111,6 +111,12 @@
     <ClCompile Include="DefferedRenderPipeline.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="Billboard.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -193,6 +199,12 @@
     </ClInclude>
     <ClInclude Include="RotateScript.h">
       <Filter>Файлы заголовков\User Scripts</Filter>
+    </ClInclude>
+    <ClInclude Include="Billboard.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +372,24 @@
     </None>
     <None Include="Assets\Old Shaders\AAShadow.shader">
       <Filter>Файлы ресурсов\Assets\Old Shaders</Filter>
+    </None>
+    <None Include="Assets\Billboard.fs">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\Billboard.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\Billboard.vs">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\particle.fs">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\particle.shader">
+      <Filter>Файлы ресурсов\Assets</Filter>
+    </None>
+    <None Include="Assets\particle.vs">
+      <Filter>Файлы ресурсов\Assets</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

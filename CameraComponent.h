@@ -3,8 +3,6 @@
 #include "Framebuffers.h"
 #include "Shader.h"
 
-#include "Mesh.h"
-
 class CameraComponent
 	: public Component
 {
@@ -21,6 +19,9 @@ public:
 	float FOV;
 
 	glm::mat4 getProjectionViewMatrix();
+	glm::mat4 getProjectionMatrix();
+	glm::mat4 getViewMatrix();
+	glm::mat4 getParticleProjectionMatrix();
 
 private:
 

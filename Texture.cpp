@@ -12,7 +12,7 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
     m_format = format;
     m_internationalformat = internationalformat;
     m_type = type;
-
+    m_layers = 0;
     glGenTextures(1, &m_texture);
     
     glBindTexture(m_target, m_texture);
@@ -20,6 +20,7 @@ Texture::Texture(GLenum target, GLenum internationalformat, GLenum format, GLenu
         for (int i = 0; i < 6; i++) {
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, m_internationalformat, (int)size.x, (int)size.y, 0, m_format, m_type, nullptr);
         }
+        m_layers = 5;
     }
     else if (m_target == GL_TEXTURE_2D_MULTISAMPLE)
         glTexStorage2DMultisample(m_target, 4, m_internationalformat, (int)size.x, (int)size.y, GL_TRUE);
@@ -87,6 +88,7 @@ void Texture::generateTextureFromData(int width, int height, const unsigned char
     m_format = GL_RGBA;
     m_internationalformat = GL_RGBA;
     m_target = GL_TEXTURE_2D;
+    m_layers = 0;
 
     if (m_texture)
         glDeleteTextures(1, &m_texture);
@@ -118,6 +120,11 @@ void Texture::setWrapMode(GLenum mode)
     glTexParameteri(m_target, GL_TEXTURE_WRAP_S, mode);
     glTexParameteri(m_target, GL_TEXTURE_WRAP_T, mode);
     glBindTexture(m_target, 0);
+}
+
+size_t Texture::getLayerCount()
+{
+    return m_layers;
 }
 
 void Texture::genMipmaps()

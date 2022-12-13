@@ -4,6 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
 
+#include "Application.h"
+
 GameObject::~GameObject()
 {
 	for (auto& elem : m_children) {
@@ -41,6 +43,12 @@ void GameObject::removeChild(GameObject* child)
 		deleting->m_parent = nullptr;
 	}
 }
+
+ComponentServiceLocator& GameObject::getComponentLocator() {
+	return Application::get().getServiceLocator();
+}
+
+
 
 Transform GameObject::getGlobalTransform()
 {
