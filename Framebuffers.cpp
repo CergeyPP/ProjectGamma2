@@ -76,10 +76,7 @@ void Framebuffer::attachTexture(Texture* texture, GLenum attachmentType)
     m_bindTextures.push_back(texture);
     m_attachmentType.push_back(attachmentType);
 
-    if (texture->target() == GL_TEXTURE_CUBE_MAP) {
-        glFramebufferTexture2D(GL_FRAMEBUFFER, attachmentType, GL_TEXTURE_CUBE_MAP_POSITIVE_X, texture->GL(), 0);
-    }
-    else glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, texture->GL(), 0);
+    glFramebufferTexture(GL_FRAMEBUFFER, attachmentType, texture->GL(), 0);
     glDrawBuffers(m_attachmentType.size(), &(m_attachmentType[0]));
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

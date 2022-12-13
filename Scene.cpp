@@ -76,6 +76,7 @@ void Scene::init(const std::string& scenePath)
 	Pmesh->mesh = board;
 	board->size = glm::vec2(0.2, 0.2);
 	Pmesh->isOpaque = 0;
+
 	
 	lightMObject = spawn(Transform(glm::vec3(2, 4, 1), glm::vec3(0), glm::vec3(0.1)));
 	Plight = lightMObject->createComponent<PointLight>();
@@ -178,3 +179,4 @@ void Scene::kill(GameObject* object)
 		}
 	}
 }
+
